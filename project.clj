@@ -14,7 +14,7 @@
   :repositories {"sonatype" {:url "http://oss.sonatype.org/content/repositories/releases"
                              :snapshots false
                              :releases {:checksum :fail}}
-                 "springsource-snapshots" {:url "http://repo.springsource.org/snapshot"
+                 "springsource-snapshots" {:url "http://repo.springsource.org/libs-snapshot"
                                            :snapshots true
                                            :releases {:checksum :fail :update :always}}}
   :javac-options      ["-target" "1.6" "-source" "1.6"]
