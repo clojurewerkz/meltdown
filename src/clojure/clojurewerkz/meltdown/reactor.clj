@@ -13,6 +13,11 @@
 ;; limitations under the License.
 
 (ns clojurewerkz.meltdown.reactor
+  "Provides key reactor and message passing operations:
+
+    * Reactor instantiation
+    * Registration (subscription) for events
+    * Event notifications"
   (:require [clojurewerkz.meltdown.consumers :as mc])
   (:import [reactor.core R Reactor]
            [reactor.fn Selector Consumer Event]
@@ -20,19 +25,27 @@
 
 
 (defn ^Reactor create
+  "Creates a reactor instance"
   []
   (R/create))
 
 (defn on
+  "Registers a Clojure function as event handler for a particular kind of events.
+
+   1-arity will register a handler for all events on the root (default) reactor.
+   2-arity takes a selector and a handler and will use the root reactor.
+   3-arity takes a reactor instance, a selector and a handler."
   ([^IFn f]
      (R/on (mc/from-fn f)))
-  ([^Reactor reactor ^IFn f]
-     (.on reactor (mc/from-fn f)))
+  ([^Selector selector ^IFn f]
+     (R/on selector (mc/from-fn f)))
   ([^Reactor reactor ^Selector selector ^IFn f]
      (.on reactor selector (mc/from-fn f))))
 
 (defn notify
   ([event]
      (R/notify event))
+  ([key payload]
+     (R/notify ^Object key (Event. payload)))
   ([^Reactor reactor key payload]
      (.notify reactor ^Object key (Event. payload))))
