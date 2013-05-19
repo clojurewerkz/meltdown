@@ -42,6 +42,12 @@
   ([^Reactor reactor ^Selector selector ^IFn f]
      (.on reactor selector (mc/from-fn f))))
 
+(defn on-any
+  "Registers a Clojure function as event handler for all events
+   using default selector."
+  ([^Reactor reactor ^IFn f]
+     (.on reactor (mc/from-fn f))))
+
 (defn notify
   ([event]
      (R/notify event))
