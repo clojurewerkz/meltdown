@@ -27,7 +27,7 @@ To subscribe for announcements of releases, important changes and so on, please 
 ## Project Maturity
 
 Meltdown is **very** (literally pre-alpha) young. Sweeping public API changes
-are likely.
+are likely. Reactor itself also evolves rapidly and is at the pre-alpha stage.
 
 
 
