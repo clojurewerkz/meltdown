@@ -13,8 +13,8 @@
         data  {:event "delivered"}
         res   (atom nil)]
     (mr/on r ($ key) (fn [event]
-                                  (reset! res event)
-                                  (.countDown latch)))
+                       (reset! res event)
+                       (.countDown latch)))
     (is (mr/responds-to? r key))
     (mr/notify r key data)
     (.await latch 5 TimeUnit/SECONDS)
@@ -55,3 +55,35 @@
          (is (:id d))
          (is (= {} (:headers d)))
          (is (= "delivered" (get-in d [:data :event]))))))
+
+(deftest test-pause-on-registrations
+  (let [r   (mr/create)
+        key "events.silly"
+        at  (atom nil)
+        reg (mr/on r ($ key) (fn [event]
+                               (reset! at event)))]
+    (is (mr/responds-to? r key))
+    (mc/pause reg)
+    (is (mr/responds-to? r key))
+    (mr/notify r key "value")
+    (is (mc/paused? reg))
+    (mr/notify r key "value")
+    (is (nil? @at))))
+
+(deftest test-resume-on-registrations
+  (let [r   (mr/create)
+        key "events.silly"
+        at  (atom nil)
+        reg (mr/on r ($ key) (fn [event]
+                               (reset! at event)))]
+    (is (mr/responds-to? r key))
+    (mc/pause reg)
+    (is (mr/responds-to? r key))
+    (mr/notify r key "value")
+    (is (mc/paused? reg))
+    (mc/resume reg)
+    (is (mr/responds-to? r key))
+    (mr/notify r key "value")
+    (is (not (mc/paused? reg)))
+    (mr/notify r key "value")
+    (is @at)))
