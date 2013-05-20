@@ -74,8 +74,10 @@
   (let [r   (mr/create)
         key "events.silly"
         at  (atom nil)
+        l   (CountDownLatch. 1)
         reg (mr/on r ($ key) (fn [event]
-                               (reset! at event)))]
+                               (reset! at event)
+                               (.countDown l)))]
     (is (mr/responds-to? r key))
     (mc/pause reg)
     (is (mr/responds-to? r key))
@@ -86,6 +88,7 @@
     (mr/notify r key "value")
     (is (not (mc/paused? reg)))
     (mr/notify r key "value")
+    (.await l 2 TimeUnit/SECONDS)
     (is @at)))
 
 (deftest test-cancel-on-registrations
