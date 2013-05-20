@@ -27,29 +27,29 @@
       (f (ev/event->map event)))))
 
 (defn ^boolean paused?
-  [^Registratin reg]
+  [^Registration reg]
   (.isPaused reg))
 
 (defn ^Registration pause
-  [^Registratin reg]
+  [^Registration reg]
   (.pause reg))
 
 (defn ^Registration resume
-  [^Registratin reg]
+  [^Registration reg]
   (.resume reg))
 
 (defn ^boolean cancelled?
-  [^Registratin reg]
+  [^Registration reg]
   (.isCancelled reg))
 
 (defn ^Registration cancel
-  [^Registratin reg]
+  [^Registration reg]
   (.cancel reg))
 
 (defn ^boolean cancell-after-use?
-  [^Registratin reg]
+  [^Registration reg]
   (.isCancellAfterUse reg))
 
 (defn ^Registration cancel-after-use
-  [^Registratin reg]
+  [^Registration reg]
   (.cancelAfterUse reg))
