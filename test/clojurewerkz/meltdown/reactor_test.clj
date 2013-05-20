@@ -87,3 +87,17 @@
     (is (not (mc/paused? reg)))
     (mr/notify r key "value")
     (is @at)))
+
+(deftest test-cancel-on-registrations
+  (let [r   (mr/create)
+        key "events.silly"
+        at  (atom nil)
+        reg (mr/on r ($ key) (fn [event]
+                               (reset! at event)))]
+    (is (mr/responds-to? r key))
+    (mc/cancel reg)
+    (is (not (mr/responds-to? r key)))
+    (mr/notify r key "value")
+    (is (mc/cancelled? reg))
+    (mr/notify r key "value")
+    (is (nil? @at))))
