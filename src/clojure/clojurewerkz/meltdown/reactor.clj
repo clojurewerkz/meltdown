@@ -45,13 +45,19 @@
 (defn on-any
   "Registers a Clojure function as event handler for all events
    using default selector."
+  ([^IFn f]
+     (R/on (mc/from-fn f)))
   ([^Reactor reactor ^IFn f]
      (.on reactor (mc/from-fn f))))
 
+;; TODO: error handlers
+
 (defn notify
-  ([event]
-     (R/notify event))
+  ([payload]
+     (R/notify (Event. payload)))
   ([key payload]
      (R/notify ^Object key (Event. payload)))
   ([^Reactor reactor key payload]
-     (.notify reactor ^Object key (Event. payload))))
+     (.notify reactor ^Object key (Event. payload)))
+  ([^Reactor reactor key payload ^IFn completion-fn]
+     (.notify reactor ^Object key (Event. payload) ^Consumer (mc/from-fn completion-fn))))
