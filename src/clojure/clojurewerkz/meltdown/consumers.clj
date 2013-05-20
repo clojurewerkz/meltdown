@@ -13,8 +13,9 @@
 ;; limitations under the License.
 
 (ns clojurewerkz.meltdown.consumers
+  "Operations on consumers and registrations"
   (:require [clojurewerkz.meltdown.events :as ev])
-  (:import reactor.fn.Consumer
+  (:import [reactor.fn Consumer Registration]
            clojure.lang.IFn))
 
 (defn ^Consumer from-fn
@@ -24,3 +25,31 @@
   (reify Consumer
     (accept [this event]
       (f (ev/event->map event)))))
+
+(defn ^boolean paused?
+  [^Registratin reg]
+  (.isPaused reg))
+
+(defn ^Registration pause
+  [^Registratin reg]
+  (.pause reg))
+
+(defn ^Registration resume
+  [^Registratin reg]
+  (.resume reg))
+
+(defn ^boolean cancelled?
+  [^Registratin reg]
+  (.isCancelled reg))
+
+(defn ^Registration cancel
+  [^Registratin reg]
+  (.cancel reg))
+
+(defn ^boolean cancell-after-use?
+  [^Registratin reg]
+  (.isCancellAfterUse reg))
+
+(defn ^Registration cancel-after-use
+  [^Registratin reg]
+  (.cancelAfterUse reg))
