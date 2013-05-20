@@ -61,3 +61,9 @@
      (.notify reactor ^Object key (Event. payload)))
   ([^Reactor reactor key payload ^IFn completion-fn]
      (.notify reactor ^Object key (Event. payload) ^Consumer (mc/from-fn completion-fn))))
+
+(defn responds-to?
+  #_ ([key]
+     (.respondsToKey reactor key))
+  ([^Reactor reactor key]
+     (.respondsToKey reactor key)))

@@ -9,12 +9,14 @@
 (deftest test-basic-delivery-over-non-root-reactor
   (let [latch (CountDownLatch. 1)
         r     (mr/create)
+        key   "events.silly"
         data  {:event "delivered"}
         res   (atom nil)]
-    (mr/on r ($ "events.silly") (fn [event]
+    (mr/on r ($ key) (fn [event]
                                   (reset! res event)
                                   (.countDown latch)))
-    (mr/notify r "events.silly" data)
+    (is (mr/responds-to? r key))
+    (mr/notify r key data)
     (.await latch 5 TimeUnit/SECONDS)
     (let [d @res]
       (is (:id d))
@@ -23,12 +25,14 @@
 
 (deftest test-basic-delivery-over-root-reactor
   (let [latch (CountDownLatch. 1)
+        key   "events.silly"
         data  {:event "delivered"}
         res   (atom nil)]
-    (mr/on ($ "events.silly") (fn [event]
-                                (reset! res event)
-                                (.countDown latch)))
-    (mr/notify "events.silly" data)
+    (mr/on ($ key) (fn [event]
+                     (reset! res event)
+                     (.countDown latch)))
+    #_ (is (mr/responds-to? key))
+    (mr/notify key data)
     (.await latch 3 TimeUnit/SECONDS)
     (let [d @res]
       (is (:id d))
