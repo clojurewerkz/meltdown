@@ -13,7 +13,7 @@
 ;; limitations under the License.
 
 (ns clojurewerkz.meltdown.selectors
-  (:import reactor.fn.Selector
+  (:import reactor.fn.selector.Selector
            reactor.Fn))
 
 (defn ^Selector $

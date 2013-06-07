@@ -19,15 +19,18 @@
     * Registration (subscription) for events
     * Event notifications"
   (:require [clojurewerkz.meltdown.consumers :as mc])
-  (:import [reactor.core R Reactor]
-           [reactor.fn Selector Consumer Event]
+  (:import [reactor R]
+           [reactor.core Reactor]
+           [reactor.fn.selector Selector]
+           [reactor.fn Consumer Event]
            clojure.lang.IFn))
 
 
+(def ^:dynamic *reactor*)
 (defn ^Reactor create
   "Creates a reactor instance"
   []
-  (R/create))
+  (alter-var-root (var *reactor*) (constantly (.get (R/reactor)))))
 
 (defn on
   "Registers a Clojure function as event handler for a particular kind of events.
@@ -36,9 +39,9 @@
    2-arity takes a selector and a handler and will use the root reactor.
    3-arity takes a reactor instance, a selector and a handler."
   ([^IFn f]
-     (R/on (mc/from-fn f)))
+     (.on *reactor* (mc/from-fn f)))
   ([^Selector selector ^IFn f]
-     (R/on selector (mc/from-fn f)))
+     (on *reactor* selector f))
   ([^Reactor reactor ^Selector selector ^IFn f]
      (.on reactor selector (mc/from-fn f))))
 
@@ -46,7 +49,7 @@
   "Registers a Clojure function as event handler for all events
    using default selector."
   ([^IFn f]
-     (R/on (mc/from-fn f)))
+     (on *reactor* f))
   ([^Reactor reactor ^IFn f]
      (.on reactor (mc/from-fn f))))
 
@@ -54,9 +57,9 @@
 
 (defn notify
   ([payload]
-     (R/notify (Event. payload)))
+     (.notify *reactor* (Event. payload)))
   ([key payload]
-     (R/notify ^Object key (Event. payload)))
+     (.notify *reactor* ^Object key (Event. payload)))
   ([^Reactor reactor key payload]
      (.notify reactor ^Object key (Event. payload)))
   ([^Reactor reactor key payload ^IFn completion-fn]

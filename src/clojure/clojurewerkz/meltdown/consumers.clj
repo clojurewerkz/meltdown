@@ -15,7 +15,8 @@
 (ns clojurewerkz.meltdown.consumers
   "Operations on consumers and registrations"
   (:require [clojurewerkz.meltdown.events :as ev])
-  (:import [reactor.fn Consumer Registration]
+  (:import [reactor.fn Consumer]
+           [reactor.fn.registry Registration]
            clojure.lang.IFn))
 
 (defn ^Consumer from-fn
