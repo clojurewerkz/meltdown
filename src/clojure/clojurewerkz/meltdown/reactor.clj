@@ -20,17 +20,38 @@
     * Event notifications"
   (:require [clojurewerkz.meltdown.consumers :as mc])
   (:import [reactor R]
-           [reactor.core Reactor]
+           [reactor.core Reactor Environment]
+           [reactor.fn.dispatch ThreadPoolExecutorDispatcher Dispatcher RingBufferDispatcher]
+           [com.lmax.disruptor.dsl ProducerType]
+           [com.lmax.disruptor YieldingWaitStrategy]
            [reactor.fn.selector Selector]
            [reactor.fn Consumer Event]
            clojure.lang.IFn))
 
+(defn environment
+  []
+  (Environment.))
 
 (def ^:dynamic *reactor*)
+
+(def dispatcher-types
+  {:event-loop "eventLoop"
+   :thread-pool "threadPoolExecutor"
+   :ring-buffer "ringBuffer"})
+
 (defn ^Reactor create
   "Creates a reactor instance"
-  []
-  (alter-var-root (var *reactor*) (constantly (.get (R/reactor)))))
+  [& {:keys [dispatcher-type dispatcher env]}]
+  (let [reactor (R/reactor)]
+    (if env
+      (.using reactor env)
+      (.using reactor (environment)))
+    (when dispatcher
+      (.using reactor dispatcher))
+    (when dispatcher-type
+      (.dispatcher reactor (dispatcher-type dispatcher-types)))
+
+    (alter-var-root (var *reactor*) (constantly (.get reactor)))))
 
 (defn on
   "Registers a Clojure function as event handler for a particular kind of events.
