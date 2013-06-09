@@ -1,4 +1,4 @@
-(ns clojurewerkz.meltdown.reactor-test
+(ns clojurewerkz.meltdown.throughput-test
   (:require [clojure.test :refer :all]
             [clojurewerkz.meltdown.reactor   :as mr]
             [clojurewerkz.meltdown.selectors :as ms :refer [$]]
@@ -22,25 +22,27 @@
 
 (defn throughput-test
   [reactor]
-  (let [selectors 250
-        iterations 1000
-        test-runs 3
-        objects (take (* selectors iterations) (gen-objects))
-        latch (CountDownLatch. (* selectors iterations))
-        start (System/currentTimeMillis)]
+  (let [selectors  250
+        iterations 7500
+        test-runs  3
+        objects    (vec (take selectors (gen-objects)))
+        latch      (CountDownLatch. (* test-runs selectors iterations))
+        consumer   (fn [event] (.countDown latch))]
+    (time
+     (register-consumers-and-warm-cache reactor objects consumer))
     (dotimes [tr test-runs]
-      (dotimes [i (* selectors iterations)]
-        (mr/notify reactor (get objects (mod i selectors)))))
-    (let [end (System/currentTimeMillis)
-          elapsed (- end start)]
-      (println
-       (str
-        (-> reactor
-            (.getDispatcher)
-            (.getClass)
-            (.getSimpleName))
-        " dispatched total of " (count objects) " messages, "
-        "throughput (" elapsed "ms): " (Math/round (float (/ (* selectors iterations) (/ elapsed 1000)))))))))
+      (let [start (System/currentTimeMillis)]
+        (dotimes [i (* selectors iterations)]
+          (mr/notify reactor (get objects (mod i selectors)) "Hello World!"))
+        (let [end (System/currentTimeMillis)
+              elapsed (- end start)]
+          (println
+           (str
+            (-> reactor
+                (.getDispatcher)
+                (.getClass)
+                (.getSimpleName))
+            "throughput (" elapsed "ms): " (Math/round (float (/ (* selectors iterations) (/ elapsed 1000)))))))))))
 
 (deftest dispatcher-throughput-test
   (testing "Event Loop"
