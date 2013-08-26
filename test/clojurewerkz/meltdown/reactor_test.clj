@@ -23,38 +23,22 @@
       (is (= {} (:headers d)))
       (is (= "delivered" (get-in d [:data :event]))))))
 
-(deftest test-basic-delivery-over-root-reactor
+;; TODO
+#_ (deftest test-basic-delivery-using-default-selector
   (let [latch (CountDownLatch. 1)
-        key   "events.silly"
+        r     (mr/create)
         data  {:event "delivered"}
         res   (atom nil)]
-    (mr/on ($ key) (fn [event]
-                     (reset! res event)
-                     (.countDown latch)))
-    #_ (is (mr/responds-to? key))
-    (mr/notify key data)
+    (mr/on r (fn [event]
+               (println "hello")
+               (reset! res event)
+               (.countDown latch)))
+    (mr/notify r "events.silly" data)
     (.await latch 3 TimeUnit/SECONDS)
     (let [d @res]
       (is (:id d))
       (is (= {} (:headers d)))
       (is (= "delivered" (get-in d [:data :event]))))))
-
-;; TODO
-#_ (deftest test-basic-delivery-using-default-selector
-     (let [latch (CountDownLatch. 1)
-           r     (mr/create)
-           data  {:event "delivered"}
-           res   (atom nil)]
-       (mr/on-any r (fn [event]
-                      (println "hello")
-                      (reset! res event)
-                      (.countDown latch)))
-       (mr/notify r "events.silly" data)
-       (.await latch 3 TimeUnit/SECONDS)
-       (let [d @res]
-         (is (:id d))
-         (is (= {} (:headers d)))
-         (is (= "delivered" (get-in d [:data :event]))))))
 
 (deftest test-pause-on-registrations
   (let [r   (mr/create)

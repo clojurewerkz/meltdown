@@ -13,7 +13,7 @@
 ;; limitations under the License.
 
 (ns clojurewerkz.meltdown.events
-  (:import reactor.fn.Event
+  (:import [reactor.event Event]
            clojure.lang.IPersistentMap))
 
 (defn ^IPersistentMap event->map

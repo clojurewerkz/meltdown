@@ -44,7 +44,7 @@
                 (.getSimpleName))
             "throughput (" elapsed "ms): " (Math/round (float (/ (* selectors iterations) (/ elapsed 1000)))))))))))
 
-(deftest dispatcher-throughput-test
+(deftest ^:performance dispatcher-throughput-test
   (testing "Event Loop"
     (throughput-test (mr/create :dispatcher-type :event-loop)))
   (testing "Thread Pool Executor"

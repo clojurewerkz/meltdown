@@ -15,8 +15,8 @@
 (ns clojurewerkz.meltdown.consumers
   "Operations on consumers and registrations"
   (:require [clojurewerkz.meltdown.events :as ev])
-  (:import [reactor.fn Consumer]
-           [reactor.fn.registry Registration]
+  (:import [reactor.function Consumer]
+           [reactor.event.registry Registration]
            clojure.lang.IFn))
 
 (defn ^Consumer from-fn
@@ -26,6 +26,7 @@
   (reify Consumer
     (accept [this event]
       (f (ev/event->map event)))))
+
 
 (defn ^boolean paused?
   [^Registration reg]
@@ -38,6 +39,7 @@
 (defn ^Registration resume
   [^Registration reg]
   (.resume reg))
+
 
 (defn ^boolean cancelled?
   [^Registration reg]
