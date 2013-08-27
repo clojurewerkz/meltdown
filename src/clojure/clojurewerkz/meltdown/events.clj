@@ -13,12 +13,27 @@
 ;; limitations under the License.
 
 (ns clojurewerkz.meltdown.events
-  (:import [reactor.event Event]
-           clojure.lang.IPersistentMap))
+  (:import [reactor.event Event Event$Headers]
+           [clojure.lang IPersistentMap]))
 
-(defn ^IPersistentMap event->map
-  [^Event event]
-  {:data     (.getData event)
-   :reply-to (.getReplyTo event)
-   :headers  (into {} (.getHeaders event))
-   :id       (.getId event)})
+(defprotocol EventToMap
+  (event->map [e]))
+
+(extend-protocol EventToMap
+  Event
+  (event->map [^Event event]
+    {:data     (.getData event)
+     :reply-to (.getReplyTo event)
+     :headers  (into {} (.getHeaders event))
+     :id       (.getId event)})
+
+  IPersistentMap
+  (event>map [e]
+    e))
+
+(defn pev
+  [& {:keys [data reply-to ^IPersistentMap headers]}]
+  (let [e (Event. (Event$Headers. headers) data)]
+    (when reply-to
+      (.setReplyTo e reply-to))
+    e))

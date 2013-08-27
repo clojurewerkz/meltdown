@@ -1,4 +1,4 @@
-(ns clojurewerkz.meltdown.reactor-test
+(ns clojurewerkz.meltdown.reactor-test-tmp
   (:require [clojure.test :refer :all]
             [clojurewerkz.meltdown.reactor   :as mr]
             [clojurewerkz.meltdown.selectors :as ms :refer [$ R]]
@@ -57,7 +57,7 @@
           res            (atom nil)]
       (mr/receive-event r selector (fn [_]
                                      (.countDown latch)
-                                     "response"))
+                                     "other data"))
 
       (mr/send-event r "hello" "data" (fn [event]
                                         (reset! res event)
@@ -65,7 +65,4 @@
 
       (.await latch 5 TimeUnit/SECONDS)
       (Thread/sleep 1)
-      (let [d @res]
-        (is (:id d))
-        (is (= {} (:headers d)))
-        (is (= "response" (get-in d [:data])))))))
+      (println @res))))

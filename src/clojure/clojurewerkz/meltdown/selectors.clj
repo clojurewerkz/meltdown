@@ -17,9 +17,12 @@
            reactor.function.Fn))
 
 (defn ^Selector $
-  [^String sel]
-  (Selectors/$ sel))
+  ([^String sel]
+     (Selectors/$ sel))
+  ([]
+     (let [sel (Selectors/$)]
+       [(.getT1 sel) (.getT2 sel)])))
 
-(defn ^Selector regex
+(defn ^Selector R
   [^String regex]
   (Selectors/R regex))
