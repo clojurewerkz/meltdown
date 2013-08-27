@@ -33,8 +33,7 @@
            [reactor.event Event]
            java.lang.Throwable
            [reactor.core Reactor]
-           [reactor.core.spec Reactors]
-           [clojurewerkz.meltdown ReactorHelper]))
+           [reactor.core.spec Reactors]))
 
 (defn environment
   []
