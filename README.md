@@ -136,7 +136,6 @@ many event keys based on some pattern, for example:
 (mr/notify reactor "Europe.Switzerland" {:das :payload}) ;; will Europe.Sw* and Europe.* handlers
 (mr/notify reactor "Asia.China" {:teh :payload}) ;; will fire none
 ```
-```
 
 
 
