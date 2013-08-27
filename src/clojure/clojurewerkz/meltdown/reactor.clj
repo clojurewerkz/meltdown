@@ -58,9 +58,9 @@
   ([^Reactor reactor ^IFn f]
      (.on reactor (mc/from-fn f))))
 
-;; TODO: error handlers
-
 (defn notify
+  ([^Reactor reactor payload]
+     (.notify reactor (Event. payload)))
   ([^Reactor reactor key payload]
      (.notify reactor ^Object key (Event. payload)))
   ([^Reactor reactor key payload ^IFn completion-fn]
@@ -92,14 +92,33 @@
 ;; Router is made for each Reactor, since otherwise reactors _will share_
 (defn ^Reactor create
   "Creates a reactor instance"
-  [& {:keys [dispatcher-type dispatcher env]}]
-  (let [reactor (Reactors/reactor)]
+  [& {:keys [dispatcher-type event-routing-strategy env]}]
+  (let [spec (Reactors/reactor)]
     (if env
-      (.env reactor env)
-      (.env reactor (environment)))
-    (when dispatcher
-      (.dispatcher reactor dispatcher))
+      (.env spec env)
+      (.env spec (environment)))
     (if dispatcher-type
-      (.dispatcher reactor (dispatcher-type dispatcher-types))
-      (.synchronousDispatcher reactor))
-    (.get reactor)))
+      (.dispatcher spec (dispatcher-type dispatcher-types))
+      (.synchronousDispatcher spec))
+    (when event-routing-strategy
+      (when (= :first event-routing-strategy)
+        (.firstEventRouting spec))
+      (when (= :round-robin event-routing-strategy)
+        (.roundRobinEventRouting spec))
+      (when (= :broadcast event-routing-strategy)
+        (.broadcastEventRouting spec)))
+    (.get spec)))
+
+(defn link
+  "Link components together"
+  [^Reactor r1 ^Reactor r2]
+  (.link r1 r2))
+
+(defn unlink
+  "Unlink components"
+  [^Reactor r1 ^Reactor r2]
+  (.unlink r1 r2))
+
+(defn responds-to?
+  [^Reactor reactor key]
+  (.respondsToKey reactor key))
