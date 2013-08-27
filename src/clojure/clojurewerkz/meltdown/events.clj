@@ -16,22 +16,14 @@
   (:import [reactor.event Event Event$Headers]
            [clojure.lang IPersistentMap]))
 
-(defprotocol EventToMap
-  (event->map [e]))
+(defn event->map
+  [^Event event]
+  {:data     (.getData event)
+   :reply-to (.getReplyTo event)
+   :headers  (into {} (.getHeaders event))
+   :id       (.getId event)})
 
-(extend-protocol EventToMap
-  Event
-  (event->map [^Event event]
-    {:data     (.getData event)
-     :reply-to (.getReplyTo event)
-     :headers  (into {} (.getHeaders event))
-     :id       (.getId event)})
-
-  IPersistentMap
-  (event>map [e]
-    e))
-
-(defn pev
+(defn ev
   [& {:keys [data reply-to ^IPersistentMap headers]}]
   (let [e (Event. (Event$Headers. headers) data)]
     (when reply-to

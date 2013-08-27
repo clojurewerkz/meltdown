@@ -27,6 +27,17 @@
     (accept [this event]
       (f (ev/event->map event)))))
 
+(defn ^Consumer from-fn-raw
+  "Instantiates a reactor consumer from a Clojure
+   function"
+  [^IFn f]
+  (reify Consumer
+    (accept [this event]
+      (f event))))
+
+(defn ^boolean paused?
+  [^Registration reg]
+  (.isPaused reg))
 
 (defn ^boolean paused?
   [^Registration reg]

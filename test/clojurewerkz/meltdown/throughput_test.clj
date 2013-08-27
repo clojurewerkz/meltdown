@@ -11,8 +11,9 @@
     (mr/on reactor ($ o) consumer))
 
   ;; pre-select everything to ensure it's in the cache
-  (doseq [o objects]
-    (.select (.getConsumerRegistry reactor) o)))
+  (let [registry (.getConsumerRegistry reactor)]
+    (doseq [o objects]
+      (.select registry o))))
 
 (defn gen-objects
   ([]

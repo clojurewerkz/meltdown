@@ -31,7 +31,10 @@
            [reactor.event.dispatch Dispatcher SynchronousDispatcher]
            [clojure.lang IFn]
            [reactor.event Event]
-           java.lang.Throwable))
+           java.lang.Throwable
+           [reactor.core Reactor]
+           [reactor.core.spec Reactors]
+           [clojurewerkz.meltdown ReactorHelper]))
 
 (defn environment
   []
@@ -42,84 +45,61 @@
    :thread-pool "threadPoolExecutor"
    :ring-buffer "ringBuffer"})
 
-(defn ^EventRouter make-router
-  []
-  (ConsumerFilteringEventRouter. (PassThroughFilter.) (ArgumentConvertingConsumerInvoker. nil)))
-
-(defn make-sync-dispatcher
-  []
-  (SynchronousDispatcher.))
-
-(defn make-caching-registory
-  []
-  (CachingRegistry.))
-
-(defprotocol IReactor
-  (on [reactor ^Selector selector ^IFn consumer] [reactor ^IFn consumer])
-  (notify [_ key event on-complete] [_ key event] [_ event])
-  (send-event [self key e callback])
-  (receive-event [self selector f] "Same as notify, except it checks for reply-to and sends a resulting callback. Used for optimization, since checking for
-   reply-to is a (relatively) expensive operation"))
-
-(defn dispatch
-  [^Dispatcher d ^Object key ^Event event ^Registry registry
-   ^Consumer error-consumer ^EventRouter router ^Consumer completition-consumer]
-  (.dispatch d key event registry error-consumer router  completition-consumer))
-
-(defn- error-handler*
-  [r]
-  (mc/from-fn
-   (fn [^Throwable t]
-     (dispatch (.dispatcher r) (.getClass t) (Event/wrap t) (.consumer-registry r) nil (.event-router r) nil))))
-
-(def ^:private error-handler (memoize error-handler*))
-
 (defn maybe-wrap-event
   [ev]
   (if (= Event (type ev))
     ev
     (Event. ev)))
 
-(deftype Reactor [^Dispatcher dispatcher event-router ^Registry consumer-registry]
+(defn on
+  "Registers a Clojure function as event handler for a particular kind of events."
+  ([^Reactor reactor ^Selector selector ^IFn f]
+     (.on reactor selector (mc/from-fn f)))
+  ([^Reactor reactor ^IFn f]
+     (.on reactor (mc/from-fn f))))
 
-  IReactor
-  (on [_ selector consumer]
-    (.register consumer-registry selector (mc/from-fn consumer)))
+;; TODO: error handlers
 
-  (on [_ consumer]
-    (.register consumer-registry (mc/from-fn consumer)))
+(defn notify
+  ([^Reactor reactor key payload]
+     (.notify reactor ^Object key (Event. payload)))
+  ([^Reactor reactor key payload ^IFn completion-fn]
+     (.notify reactor ^Object key (Event. payload) ^Consumer (mc/from-fn completion-fn))))
 
-  (notify [this key event on-complete]
-    (assert (not (nil? key)) "Key can't be nil")
-    (assert (not (nil? key)) "Event can't be nil")
+(defn- notify-raw
+  [^Reactor reactor key payload]
+  (.notify reactor ^Object key payload))
 
-    (.dispatch dispatcher key (maybe-wrap-event event) consumer-registry (error-handler this) event-router on-complete))
+(defn send-event
+  [^Reactor reactor key event callback]
+  (let [e (Event. event)
+        [reply-to-selector reply-to-key] (msel/$)]
+    (.setReplyTo e reply-to-key)
+    (on reactor reply-to-selector
+        (fn [response]
+          (callback response)
+          (.unregister (.getConsumerRegistry reactor) reply-to-key)))
+    (notify-raw reactor key e)))
 
-  (notify [this key event]
-    (notify this key event nil))
-
-  (notify [_ event]
-
-    )
-
-  (send-event [self key event callback]
-    (let [e (maybe-wrap-event event)
-          [reply-to-selector reply-to-key] (msel/$)]
-      (.setReplyTo e reply-to-key)
-      (on self reply-to-selector
-          (fn [response]
-            (callback response)
-            (.unregister consumer-registry reply-to-key)))
-      (notify self key e)))
-
-  (receive-event [self selector f]
-    (on self selector (fn [event]
-                        (notify self (:reply-to event) (f event))))))
-
+(defn receive-event
+  "Same as notify, except it checks for reply-to and sends a resulting callback. Used for optimization, since checking for
+   reply-to is a (relatively) expensive operation"
+  [^Reactor reactor selector ^IFn f]
+  (.on reactor selector (mc/from-fn-raw
+                         (fn [e]
+                           (notify reactor (.getReplyTo e) (f (dissoc (ev/event->map e) :reply-to :id)))))))
 
 ;; Router is made for each Reactor, since otherwise reactors _will share_
-(defn create
-  ""
-  []
-  (Reactor. (make-sync-dispatcher) (make-router) (make-caching-registory))
-  )
+(defn ^Reactor create
+  "Creates a reactor instance"
+  [& {:keys [dispatcher-type dispatcher env]}]
+  (let [reactor (Reactors/reactor)]
+    (if env
+      (.env reactor env)
+      (.env reactor (environment)))
+    (when dispatcher
+      (.dispatcher reactor dispatcher))
+    (if dispatcher-type
+      (.dispatcher reactor (dispatcher-type dispatcher-types))
+      (.synchronousDispatcher reactor))
+    (.get reactor)))

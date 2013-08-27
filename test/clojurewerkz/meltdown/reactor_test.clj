@@ -11,7 +11,7 @@
   `(let [latch# (CountDownLatch. ~countdown-from)
          ~'latch latch#]
      ~@body
-     (.await latch# 5 TimeUnit/SECONDS)
+     (.await latch# 1 TimeUnit/SECONDS)
      (is (= 0 (.getCount latch#)))))
 
 (deftest test-basic-delivery-over-non-root-reactor
@@ -24,6 +24,7 @@
                          (reset! res event)
                          (.countDown latch)))
       (mr/notify r key data)
+      (.await latch 1 TimeUnit/SECONDS)
       (let [d @res]
         (is (:id d))
         (is (= {} (:headers d)))
@@ -42,6 +43,7 @@
       (mr/notify r "events.two" data)
       (mr/notify r "events.three" data)
 
+      (.await latch 1 TimeUnit/SECONDS)
       (let [d @res]
         (is (:id d))
         (is (= {} (:headers d)))
@@ -55,6 +57,7 @@
           selector       ($ key)
           [reply-to-selector reply-to-key] ($)
           res            (atom nil)]
+
       (mr/receive-event r selector (fn [_]
                                      (.countDown latch)
                                      "response"))
@@ -63,8 +66,7 @@
                                         (reset! res event)
                                         (.countDown latch)))
 
-      (.await latch 5 TimeUnit/SECONDS)
-      (Thread/sleep 1)
+      (.await latch 1 TimeUnit/SECONDS)
       (let [d @res]
         (is (:id d))
         (is (= {} (:headers d)))

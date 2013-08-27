@@ -28,5 +28,6 @@
   :source-paths       ["src/clojure"]
   :java-source-paths  ["src/java"]
   :test-selectors     {:default     (fn [m] (not (:performance m)))
+                       :performance :performance
                        :focus       :focus
                        :all         (constantly true)})
