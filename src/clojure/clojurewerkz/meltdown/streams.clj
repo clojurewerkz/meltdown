@@ -6,6 +6,11 @@
            clojure.lang.IFn)
   (:require [clojurewerkz.meltdown.consumers :as mc]))
 
+(def dispatcher-types
+  {:event-loop "eventLoop"
+   :thread-pool "threadPoolExecutor"
+   :ring-buffer "ringBuffer"})
+
 (defn ^Function fn->function
   "Instantiates a reactor consumer from a Clojure
    function"
@@ -58,8 +63,14 @@
   (.consume stream
             (mc/from-fn-raw f)))
 
-(defn create
-  []
+(defn ^Deferred create
+  [& {:keys [dispatcher-type values batch-size]}]
   (let [spec (Streams/defer)]
-    (.synchronousDispatcher spec)
+    (if dispatcher-type
+      (.dispatcher spec (dispatcher-type dispatcher-types))
+      (.synchronousDispatcher spec))
+    (when values
+      (.each spec values))
+    (when batch-size
+      (.batchSize spec batch-size))
     (.get spec)))
