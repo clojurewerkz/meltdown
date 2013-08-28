@@ -137,15 +137,192 @@ many event keys based on some pattern, for example:
 (mr/notify reactor "Asia.China" {:teh :payload}) ;; will fire none
 ```
 
-
-
 ## Routing strategies
+
+Whenever you have more than a single handler attached for selector, you
+can define a routing strategy:
+
+ * `:first` routing strategy will take a first handler for which
+   selector matches key
+ * `:broadcast` will dispatch event to every handler whose selector
+   matches key
+ * `:round-robin` on each run, will dispatch event to least recently
+   used handler for which selector matches key. For example, if there're
+   three handlers, first event will get to first, second - to second,
+   third - to third, fourth - to first again and so on.
+
+You can chose a routing strategy that makes most sense for your
+application. `:first` is usually used when there should be a guarantee
+that a single, first-assigned handler should take care of
+event. `:broadcast` makes sense when all handlers should get an event
+simultaneously, and perform different actions. And `:round-robin` would
+make sense for things like load-balancing, whenever you would like to
+keep all workers equally busy, therefore giving the one that just
+received an event a chance to take care of it before it gets the next one.
+
+In order to chose a routing strategy, pass one of the mentioned values
+to `create` function, for example:
+
+```clj
+(mr/create :event-routing-strategy :broadcast)
+```
 
 ## Dispatchers
 
+There are several types of dispatchers, providing you a toolkit for both
+threadpool-style long-running execution to high-throughput task
+dispatching.
+
+  * default one, syncronous dispatcher, implementation that dispatches
+    events using the calling thread.
+  * `:event-loop` dispatcher implementation that dispatches events using
+    the calling thread. Together with default syncronous, very useful in
+    development mode.
+  * `:thread-pool` dispatcher implementation that uses
+    `ThreadPoolExecution` with an unbounded queue to dispatch
+    events. Works best for long-running tasks.
+  * `:ring-buffer` dispatcher implementation that uses LMAX Disruptor
+    RingBuffer to queue tasks to execute. Known to be most
+    high-througput implementation.
+
+
+In order to create a reactor backed by the dispatched of your
+preference, pass `:dispatcher-type` to `create` function, for example:
+
+```clj
+(mr/create :dispatcher-type :ring-buffer)
+```
+
 ## Request/response pattern
 
+It is possible to receive get a callback from the callee. In order to
+implement request-response with callback, use `send-event`
+`receive-event` pair of methods.
+
+`receive-event` is used instead of `notify` for performance
+reasons. It's an expensive operation to check for `:respond-to` field
+for each event. Result of the handler execution will be passed back to
+the caller.
+
+For example, if you'd like to send an event with `hello-key` key, execute a
+callback function whenever response is received, you can do it that way:
+
+```clj
+;; Result of handler execution will be passed back to callback in send-event
+(mr/receive-event reactor ($ "hello-key") (fn [_] "response"))
+
+;; Sends "data" to "hello-key" and waits for handler to call back
+(mr/send-event reactor "hello-key" "data" (fn [event]
+                                            ;; do job with response
+                                            ))
+```
+
 ## Stream processing
+
+Two main concepts in stream processing are `channel` and `stream`. You
+can publish information to `channel`, create arbitrary amount of streams
+out of any `channel` or `stream`.
+
+`stream` is a stateless event processor, that allows values that are
+going through it to be filtered or changed. It's very easy to build
+large processing graphs using this concept, since every mutation returns
+another `stream` you can attach consumers to.
+
+In order to compose streams, you can use `map*`, `filter*`, `reduce*`
+and `batch*` functions. They have signatures similar to the ones you're
+used to have in clojure. Applying `map*` with `inc` function on the
+channel will create a new `stream` that contains all the values
+incremented by one.
+
+For example, let's create a channel where we push integers, and two
+streams with attached consumers that would calculate incremented and
+decremented values for incoming ints:
+
+```clj
+(ns :my-streams
+  (:use clojurewerkz.meltdown.streams))
+
+(def channel (create)) ;; creates a channel
+
+(def incremented-values (map* inc channel))
+(def decremented-values (map* dec channel))
+
+(consume incremented-values (fn [i] (println "Incremented value: " i)))
+(consume decremented-values (fn [i] (println "Decremented value: " i)))
+
+(accept channel 1)
+;; => "Incremented value: 2
+;; => "Decremented value: 0
+(accept channel 2)
+;; => "Incremented value: 3
+;; => "Decremented value: 1
+(accept channel 3)
+;; => "Incremented value: 4
+;; => "Decremented value: 2
+```
+
+You can also apply `map*` to streams that were already "mapped", reduced
+filtered or batched:
+
+```
+(def channel (create))
+
+(def incremented-values (map* inc channel))
+(def squared-values (map* (fn [i] (* i i) incremented-values)))
+
+(consume squared-values (fn [i] (println "Incremented and squared value: " i)))
+
+(accept channel 1)
+;; => Incremented and squared value: 4
+(accept channel 2)
+;; => Incremented and squared value: 9
+```
+
+`filter*` would filter values that go through it and only pass ones for
+which predicate matches further:
+
+```clj
+(def channel (create))
+
+(def even-numbers (filter* even? channel))
+(def odd-numbers  (filter* odd? channel))
+
+(consume even-values (fn [i] (println "Got an even value: " i)))
+(consume odd-values (fn [i] (println "Got an odd value: " i)))
+
+(accept channel 1)
+;; => Got an odd value: 1
+(accept channel 2)
+;; => Got an even value: 2
+(accept channel 3)
+;; => Got an odd value: 3
+(accept channel 4)
+;; => Got an even value: 4
+```
+
+`reduce*` works pretty much same way as `reduce` in clojure works,
+except for it gets values from the stream and holds last accumulator
+value:
+
+```clj
+(def channel (create))
+
+(def result (atom nil))
+
+(def sum (reduce* #(+ %1 %2) 0 channel)
+(consume sum #(reset! res %))
+
+(accept channel 1)
+(accept channel 2)
+(accept channel 3)
+
+@res ;; => 6
+```
+
+For buffered operations, for example, when you'd like to have several
+values batched together, and only bundled values are of interest for
+you, you can use `batch*` that only emits values when buffer capacity is
+reached and buffer is flushed.
 
 ## Practical applications
 
@@ -162,6 +339,12 @@ and take care of it.
 You should be aware of the fact that if your handlers never finish (for
 example, there's an endless loop inside one of handlers), you'll
 eventually run out of available handlers, and won't be able to proceed.
+
+## Performance
+
+Throughput tests are included. They're formed in same exact way
+Reactor's throughput tests are done, therefore you can compare outputs
+directly. Overhead is insignificant.
 
 ## Supported Clojure Versions
 
