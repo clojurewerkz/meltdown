@@ -2,18 +2,19 @@
   (:require [clojure.test :refer :all]
             [clojurewerkz.meltdown.reactor   :as mr]
             [clojurewerkz.meltdown.selectors :as ms :refer [$]]
-            [clojurewerkz.meltdown.consumers :as mc])
+            [clojurewerkz.meltdown.consumers :as mc]
+            [clojurewerkz.meltdown.events    :as me]
+            )
   (:import [java.util.concurrent CountDownLatch TimeUnit]))
 
 (defn register-consumers-and-warm-cache
   [reactor objects consumer]
   (doseq [o objects]
-    (mr/on reactor ($ o) consumer))
+    (mr/register-consumer reactor ($ o) consumer))
 
   ;; pre-select everything to ensure it's in the cache
-  (let [registry (.getConsumerRegistry reactor)]
-    (doseq [o objects]
-      (.select registry o))))
+  (doseq [o objects]
+    (.select (.getConsumerRegistry reactor) o)))
 
 (defn gen-objects
   ([]
@@ -28,13 +29,15 @@
         test-runs  3
         objects    (vec (take selectors (gen-objects)))
         latch      (CountDownLatch. (* test-runs selectors iterations))
-        consumer   (fn [event] (.countDown latch))]
+        consumer   (mc/from-fn-raw (fn [_] (.countDown latch)))
+        hello      (me/ev :data "Hello World!")]
     (time
      (register-consumers-and-warm-cache reactor objects consumer))
     (dotimes [tr test-runs]
       (let [start (System/currentTimeMillis)]
-        (dotimes [i (* selectors iterations)]
-          (mr/notify reactor (get objects (mod i selectors)) "Hello World!"))
+        (dotimes [i iterations]
+          (doseq [o objects]
+            (mr/notify-raw ^Reactor reactor o ^Event hello)))
         (let [end (System/currentTimeMillis)
               elapsed (- end start)]
           (println
@@ -43,7 +46,9 @@
                 (.getDispatcher)
                 (.getClass)
                 (.getSimpleName))
-            "throughput (" elapsed "ms): " (Math/round (float (/ (* selectors iterations) (/ elapsed 1000)))))))))))
+            " throughput (" elapsed "ms): " (Math/round (float (/ (* selectors iterations) (/ elapsed 1000))))
+            "/sec"
+            )))))))
 
 (deftest ^:performance dispatcher-throughput-test
   (testing "Event Loop"

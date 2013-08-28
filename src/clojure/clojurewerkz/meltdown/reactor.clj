@@ -27,7 +27,7 @@
            [reactor.event.registry Registry CachingRegistry]
            [reactor.filter PassThroughFilter]
            [reactor.core Environment]
-           [reactor.function Observable Consumer]
+           [reactor.function Consumer]
            [reactor.event.dispatch Dispatcher SynchronousDispatcher]
            [clojure.lang IFn]
            [reactor.event Event]
@@ -57,17 +57,24 @@
   ([^Reactor reactor ^IFn f]
      (.on reactor (mc/from-fn f))))
 
+(defn register-consumer
+  "Registers a Clojure function as event handler for a particular kind of events."
+  ([^Reactor reactor ^Selector selector ^Consumer consumer]
+     (.on reactor selector consumer))
+  ([^Reactor reactor ^Consumer consumer]
+     (.on reactor consumer)))
+
 (defn notify
   ([^Reactor reactor payload]
      (.notify reactor (Event. payload)))
   ([^Reactor reactor key payload]
-     (.notify reactor ^Object key (Event. payload)))
+     (.notify reactor ^Object key ^Event (Event. payload) nil))
   ([^Reactor reactor key payload ^IFn completion-fn]
      (.notify reactor ^Object key (Event. payload) ^Consumer (mc/from-fn completion-fn))))
 
-(defn- notify-raw
-  [^Reactor reactor key payload]
-  (.notify reactor ^Object key payload))
+(defn notify-raw
+  [^Reactor reactor ^Object key ^Event payload]
+  (.notify reactor ^Object key ^Event payload nil))
 
 (defn send-event
   [^Reactor reactor key event callback]

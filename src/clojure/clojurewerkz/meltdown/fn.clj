@@ -15,7 +15,7 @@
 (ns clojurewerkz.meltdown.fn
   "Interfaces Clojure functions to Reactor's Function interface and
    such"
-  (:import reactor.fn.Function
+  (:import reactor.function.Function
            clojure.lang.IFn))
 
 (defn ->function
