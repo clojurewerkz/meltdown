@@ -57,7 +57,7 @@ are using Maven, add the following repository definition to your `pom.xml`:
 With Leiningen:
 
 ```clj
-[clojurewerkz/meltdown "1.0.0-alpha1-SNAPSHOT"]
+[clojurewerkz/meltdown "1.0.0-alpha1"]
 ```
 
 With Maven:
@@ -66,7 +66,7 @@ With Maven:
 <dependency>
   <groupId>clojurewerkz</groupId>
   <artifactId>meltdown</artifactId>
-  <version>1.0.0-alpha1-SNAPSHOT</version>
+  <version>1.0.0-alpha1</version>
 </dependency>
 ```
 
@@ -323,6 +323,7 @@ For buffered operations, for example, when you'd like to have several
 values batched together, and only bundled values are of interest for
 you, you can use `batch*` that only emits values when buffer capacity is
 reached and buffer is flushed.
+
 
 ## Practical applications
 
