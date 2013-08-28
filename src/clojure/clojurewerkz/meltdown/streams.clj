@@ -65,12 +65,15 @@
         (.collect (.batch (maybe-compose deferred-or-stream) i))))
 
 (defn reduce*
-  [f deferred-or-stream]
-  (.reduce (maybe-compose deferred-or-stream) (fn->function
-                                               (fn [^Tuple2 tuple]
-                                                 (let [value (.getT1 tuple)
-                                                       acc (.getT2 tuple)]
-                                                   (f acc value))))))
+  ([f default-value deferred-or-stream]
+     (.reduce (maybe-compose deferred-or-stream) (fn->function
+                                                   (fn [^Tuple2 tuple]
+                                                     (let [value (.getT1 tuple)
+                                                           acc (or (.getT2 tuple) default-value)]
+                                                       (f acc value))))))
+  ([f deferred-or-stream]
+     (reduce* f nil deferred-or-stream))
+  )
 
 (defn consume
   [^Stream stream f]

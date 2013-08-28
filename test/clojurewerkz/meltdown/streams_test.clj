@@ -59,7 +59,7 @@
 
 (deftest basic-stream-reduce-test
   (let [channel (create)
-        stream  (reduce* #(+ (or %1 0) %2) channel)
+        stream  (reduce* #(+ %1 %2) 0 channel)
         res     (atom nil)]
 
     (consume stream #(reset! res %))
