@@ -264,7 +264,7 @@ decremented values for incoming ints:
 You can also apply `map*` to streams that were already "mapped", reduced
 filtered or batched:
 
-```
+```clj
 (def channel (create))
 
 (def incremented-values (map* inc channel))
