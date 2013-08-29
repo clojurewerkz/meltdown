@@ -1,5 +1,6 @@
 (ns clojurewerkz.meltdown.stream-graph-test
-  (:require [clojure.test :refer :all])
+  (:require [clojure.test :refer :all]
+            [clojurewerkz.meltdown.streams :as ms])
   (:use clojurewerkz.meltdown.stream-graph
         clojure.test))
 
@@ -139,3 +140,20 @@
           d2 @res2]
       (is (= 16 d1))
       (is (= 5 d2)))))
+
+
+(deftest attached-doseq-trick-test
+  (let [res (atom {})
+        summarizer #(+ %1 %2)
+        channel (graph (create)
+                       (dotimes [i 5]
+                         (map* #(swap! res assoc i %))))]
+
+    (accept channel 1)
+    (accept channel 2)
+    (accept channel 3)
+    (accept channel 4)
+
+    (let [d @res]
+      (dotimes [i 5]
+        (is (= 4 (get d i)))))))
