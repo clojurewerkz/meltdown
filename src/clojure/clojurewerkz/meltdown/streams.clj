@@ -52,19 +52,26 @@
     deferred-or-stream))
 
 (defn map*
+  "Defines a map function, that will apply `f` to all events going through it."
   [f deferred-or-stream]
   (.map (maybe-compose deferred-or-stream) (fn->function f)))
 
 (defn filter*
+  "Defines a filter function, that will apply predicate `f` to all events going through it
+   and will stream only those for which predicate returned truthy value."
   [f deferred-or-stream]
   (.filter (maybe-compose deferred-or-stream) (fn->predicate f)))
 
 (defn batch*
+  "Defines a batch function that will accumulate values until it's reaches count of `i`, and
+   streams the resulting array of values further down."
   [i deferred-or-stream]
   (map* #(into [] %)
         (.collect (.batch (maybe-compose deferred-or-stream) i))))
 
 (defn reduce*
+  "Defines an aggregator funciton that will apply previous aggregator value and new incoming event
+   to function `f`, receives `default-value` with which aggregator is initialized."
   ([f default-value deferred-or-stream]
      (.reduce (maybe-compose deferred-or-stream) (fn->function
                                                    (fn [^Tuple2 tuple]
@@ -72,15 +79,16 @@
                                                            acc (or (.getT2 tuple) default-value)]
                                                        (f acc value))))))
   ([f deferred-or-stream]
-     (reduce* f nil deferred-or-stream))
-  )
+     (reduce* f nil deferred-or-stream)))
 
 (defn consume
+  "Defines a consumer for stream."
   [^Stream stream f]
   (.consume stream
             (mc/from-fn-raw f)))
 
 (defn ^Deferred create
+  "Creates a processing channel"
   [& {:keys [dispatcher-type values batch-size]}]
   (let [spec (Streams/defer)]
     (if dispatcher-type
