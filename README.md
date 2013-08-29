@@ -332,6 +332,8 @@ values batched together, and only bundled values are of interest for
 you, you can use `batch*` that only emits values when buffer capacity is
 reached and buffer is flushed.
 
+### Custom streams
+
 If these four given operations are not enough for you and you'd like to
 create a custom stream, it's quite easy as welll. For that, there's a
 `custom-stream` operation available. For example, you'd like to create
@@ -352,8 +354,6 @@ you can use let-over-lamda:
          (accept downstream event)))
      upstream)))
 ```
-
-### Custom streams
 
 You can use custom streams same way as you usually use internal ones:
 
