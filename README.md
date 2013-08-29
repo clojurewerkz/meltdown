@@ -234,6 +234,8 @@ used to have in clojure. Applying `map*` with `inc` function on the
 channel will create a new `stream` that contains all the values
 incremented by one.
 
+### `map*` operation
+
 For example, let's create a channel where we push integers, and two
 streams with attached consumers that would calculate incremented and
 decremented values for incoming ints:
@@ -278,6 +280,8 @@ filtered or batched:
 ;; => Incremented and squared value: 9
 ```
 
+### `filter*` operation
+
 `filter*` would filter values that go through it and only pass ones for
 which predicate matches further:
 
@@ -300,6 +304,8 @@ which predicate matches further:
 ;; => Got an even value: 4
 ```
 
+### `reduce*` operation
+
 `reduce*` works pretty much same way as `reduce` in clojure works,
 except for it gets values from the stream and holds last accumulator
 value:
@@ -319,11 +325,120 @@ value:
 @res ;; => 6
 ```
 
+### `batch*` operation
+
 For buffered operations, for example, when you'd like to have several
 values batched together, and only bundled values are of interest for
 you, you can use `batch*` that only emits values when buffer capacity is
 reached and buffer is flushed.
 
+If these four given operations are not enough for you and you'd like to
+create a custom stream, it's quite easy as welll. For that, there's a
+`custom-stream` operation available. For example, you'd like to create
+a stream that will only dispatch every 5th value further. For state,
+you can use let-over-lamda:
+
+```clj
+(defn every-fifth-stream
+  "Defines a stream that will receive all events from upstream and dispatch
+   every fifth event further down"
+  [upstream]
+  (let [counter (atom 0)]
+    (custom-stream
+     (fn [event downstream]
+       (swap! counter inc)
+       (when (= 5 @counter)
+         (reset! counter 0)
+         (accept downstream event)))
+     upstream)))
+```
+
+### Custom streams
+
+You can use custom streams same way as you usually use internal ones:
+
+```clj
+(def channel (create))
+
+(def result (atom nil))
+
+(def incrementer (map* inc channel)
+(def inst-every-fifth-stream (every-fifth-stream incrememter))
+(consume inst-every-fifth-stream #(reset! res %))
+
+(accept channel 1) ;; @res is still `nil`
+(accept channel 2) ;; @res is still `nil`
+(accept channel 3) ;; @res is still `nil`
+(accept channel 4) ;; @res is still `nil`
+(accept channel 5)
+@res ;; => 6
+```
+
+### Building declarative graphs
+
+You can also build processing graphs in a declarative manner. For example,
+let's create a graph that will increment all incoming values, then aggregate
+a sum of them and put that sum to atom.
+
+For these examples, you should use `clojurewerkz.meltdown.stream-graph` namespace
+instead of usual `streams` one.
+
+```clj
+(ns my-stream-graphs-ns
+  (:use clojurewerkz.meltdown.stream-graph))
+
+(def res (atom nil))
+
+(def channel (graph (create)
+                    (map* inc
+                          (reduce* #(+ %1 %2) 0
+                                   (consume #(reset! res %))))))
+
+(accept channel 1)
+(accept channel 2)
+(accept channel 3)
+
+@res
+;; => 9
+```
+
+### Attaching and detaching graph parts
+
+If you see that your graph is too deeply nested, and you'd like to split it
+in parts, you can use `attach` and `detach` functions. For example, here's
+a graph that will increment each incoming value and calculate sums of
+even and odd values separately:
+
+```clj
+(let [even-sum (atom nil)
+      odd-sum (atom nil)
+      even-summarizer (detach
+                       (filter* even?
+                                (reduce* #(+ %1 %2) 0
+                                         (consume #(reset! even-sum %)))))
+
+      odd-summarizer (detach
+                      (filter* odd?
+                               (reduce* #(+ %1 %2) 0
+                                        (consume #(reset! odd-sum %)))))
+      summarizer #(+ %1 %2)
+      channel (graph (create)
+                     (map* inc
+                           (attach even-summarizer)
+                           (attach odd-summarizer)))]
+
+  (accept channel 1)
+  (accept channel 2)
+  (accept channel 3)
+  (accept channel 4)
+
+  @even-sum
+  ;; => 6
+
+  @odd-sum
+  ;; => 8
+  )
+```
 
 ## Practical applications
 
