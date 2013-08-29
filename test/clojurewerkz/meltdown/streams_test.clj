@@ -69,3 +69,28 @@
     (accept channel 3)
 
     (is (= 6 @res))))
+
+(deftest custom-stream-test
+  (let [channel            (create)
+        incrementer        (map* inc channel)
+        every-fifth-stream (let [counter (atom 0)]
+                             (custom-stream
+                              (fn [event downstream]
+                                (swap! counter inc)
+                                (when (= 5 @counter)
+                                  (reset! counter 0)
+                                  (accept downstream event)))
+                              incrementer))
+        res                (atom nil)
+        consumer           (consume every-fifth-stream #(reset! res %))]
+
+    (accept channel 1)
+    (is (= nil @res))
+    (accept channel 2)
+    (is (= nil @res))
+    (accept channel 3)
+    (is (= nil @res))
+    (accept channel 4)
+    (is (= nil @res))
+    (accept channel 5)
+    (is (= 6 @res))))

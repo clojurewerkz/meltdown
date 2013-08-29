@@ -41,6 +41,19 @@
     (test [a]
       (f a))))
 
+(defn ^Deferred create
+  "Creates a processing channel"
+  [& {:keys [dispatcher-type values batch-size]}]
+  (let [spec (Streams/defer)]
+    (if dispatcher-type
+      (.dispatcher spec (dispatcher-type dispatcher-types))
+      (.synchronousDispatcher spec))
+    (when values
+      (.each spec values))
+    (when batch-size
+      (.batchSize spec batch-size))
+    (.get spec)))
+
 (defn accept
   [^Stream stream value]
   (.accept stream value))
@@ -87,15 +100,9 @@
   (.consume stream
             (mc/from-fn-raw f)))
 
-(defn ^Deferred create
-  "Creates a processing channel"
-  [& {:keys [dispatcher-type values batch-size]}]
-  (let [spec (Streams/defer)]
-    (if dispatcher-type
-      (.dispatcher spec (dispatcher-type dispatcher-types))
-      (.synchronousDispatcher spec))
-    (when values
-      (.each spec values))
-    (when batch-size
-      (.batchSize spec batch-size))
-    (.get spec)))
+(defn custom-stream
+  [f deferred-or-stream]
+  (let [downstream (create)]
+    (consume (maybe-compose deferred-or-stream)
+             #(f % downstream))
+    (.compose downstream)))

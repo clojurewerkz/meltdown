@@ -1,4 +1,4 @@
-(ns clojurewerkz.meltdown.streams-test
+(ns clojurewerkz.meltdown.stream-graph-test
   (:require [clojure.test :refer :all])
   (:use clojurewerkz.meltdown.stream-graph
         clojure.test))
