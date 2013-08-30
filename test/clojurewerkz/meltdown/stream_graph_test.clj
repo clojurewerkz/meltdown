@@ -157,3 +157,20 @@
     (let [d @res]
       (dotimes [i 5]
         (is (= 4 (get d i)))))))
+
+(deftest basic-map-batch-test
+  (let [res (atom nil)
+        swapper (fn [k] #(swap! res assoc k %))
+        channel (graph (create)
+                       (map* inc
+                             (batch* 5
+                                     (consume #(reset! res %)))))]
+
+    (accept channel 1)
+    (accept channel 2)
+    (accept channel 3)
+    (accept channel 4)
+    (accept channel 5)
+
+    (let [d @res]
+      (is (= [2 3 4 5 6] d)))))
