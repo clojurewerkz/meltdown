@@ -65,7 +65,7 @@ With Maven:
 <dependency>
   <groupId>clojurewerkz</groupId>
   <artifactId>meltdown</artifactId>
-  <version>1.0.0-alpha2</version>
+  <version>1.0.0-alpha3</version>
 </dependency>
 ```
 
