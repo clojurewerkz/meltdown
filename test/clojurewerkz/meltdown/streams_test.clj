@@ -94,3 +94,14 @@
     (is (= nil @res))
     (accept channel 5)
     (is (= 6 @res))))
+
+
+(deftest basic-identity-test
+  (let [channel (create)
+        stream  (map* identity channel)
+        res (atom nil)]
+
+    (consume stream (fn [v] (reset! res v)))
+    (accept channel [1 2 3])
+    (let [d @res]
+      (is (= [1 2 3] d)))))
