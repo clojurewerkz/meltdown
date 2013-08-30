@@ -1,5 +1,12 @@
 ## Changes between 1.0.0-alpha1 and 1.0.0-alpha2
 
+### Environment option is added to stream creation
+
+It is only possible to specify type of dispatcher when there's an Environment attached to reactor.
+Option was previously missing.
+
+## Changes between 1.0.0-alpha1 and 1.0.0-alpha2
+
 ### Building declarative graphs
 
 New namespace, `clojurewerkz.meltdown.stream-graph`, was added for building graphs in a declarative
