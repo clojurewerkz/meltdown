@@ -15,6 +15,7 @@
 (ns clojurewerkz.meltdown.streams
   (:import [reactor.core.composable.spec Streams]
            [reactor.core.composable Stream Deferred]
+           [reactor.core Environment]
            [reactor.function Function Predicate]
            [reactor.tuple Tuple2]
            clojure.lang.IFn)
@@ -41,10 +42,17 @@
     (test [a]
       (f a))))
 
+(defn environment
+  []
+  (Environment.))
+
 (defn ^Deferred create
   "Creates a processing channel"
-  [& {:keys [dispatcher-type values batch-size]}]
+  [& {:keys [dispatcher-type values batch-size env]}]
   (let [spec (Streams/defer)]
+    (if env
+      (.env spec env)
+      (.env spec (environment)))
     (if dispatcher-type
       (.dispatcher spec (dispatcher-type dispatcher-types))
       (.synchronousDispatcher spec))
