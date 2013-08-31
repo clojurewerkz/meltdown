@@ -129,5 +129,6 @@
   (.unlink r1 r2))
 
 (defn responds-to?
+  "Returns true if provded reactor has consumers registered for a particular key"
   [^Reactor reactor key]
   (.respondsToKey reactor key))
