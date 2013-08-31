@@ -45,6 +45,7 @@
    :ring-buffer "ringBuffer"})
 
 (defn maybe-wrap-event
+  "Coerces given into to an Event instance"
   [ev]
   (if (instance? Event ev)
     ev
