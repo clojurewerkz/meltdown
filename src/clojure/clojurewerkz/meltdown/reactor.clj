@@ -46,7 +46,7 @@
 
 (defn maybe-wrap-event
   [ev]
-  (if (= Event (type ev))
+  (if (instance? Event ev)
     ev
     (Event. ev)))
 
