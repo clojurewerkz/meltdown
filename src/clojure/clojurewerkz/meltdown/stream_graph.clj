@@ -32,6 +32,7 @@
                         ~'upstream)))
 
 (defmacro filter*
+  "Like clojure.core/filter but for graph computations"
   ([f] `(ms/filter* ~f ~'upstream))
   ([f & downstreams] `(let [~'upstream (ms/filter* ~f ~'upstream)]
                         ~@downstreams
@@ -44,6 +45,7 @@
                         ~'upstream)))
 
 (defmacro reduce*
+  "Like clojure.core/reduce but for graph computations"
   ([f default-value] `(ms/reduce* ~f ~default-value ~'upstream))
   ([f default-value & downstreams] `(let [~'upstream (ms/reduce* ~f ~default-value ~'upstream)]
                                       ~@downstreams
