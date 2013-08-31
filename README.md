@@ -175,8 +175,8 @@ dispatching.
   * default one, syncronous dispatcher, implementation that dispatches
     events using the calling thread.
   * `:event-loop` dispatcher implementation that dispatches events using
-    the calling thread. Together with default syncronous, very useful in
-    development mode.
+    the single dedicated thread. Together with default syncronous, very
+    useful in development mode.
   * `:thread-pool` dispatcher implementation that uses
     `ThreadPoolExecution` with an unbounded queue to dispatch
     events. Works best for long-running tasks.
