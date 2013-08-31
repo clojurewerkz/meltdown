@@ -13,19 +13,19 @@
         ~'upstream)))
 
 (defmacro detach
-  "Detaches given functions for, to be attached later on to processing graph, mostly used to break down deep
-   dependencies to smaller pieces."
+  "Detaches given functions from the graph, to be attached later on.
+   Mostly used to break down functions into smaller pieces."
   [body] `(fn [u#]
             (let [~'upstream u#]
               ~body)))
 
 (defmacro attach
-  "Attaches detached processing parts back to the graph as if they were declared as a part of graph from the
+  "Attaches parts back to the graph as if they were declared as a part of graph from the
    beginning."
   [detached] `(~detached ~'upstream))
 
 (defmacro map*
-  "Map"
+  "Like clojure.core/map but for graph computations"
   ([f] `(ms/map* ~f ~'upstream))
   ([f & downstreams] `(let [~'upstream (ms/map* ~f ~'upstream)]
                         ~@downstreams
