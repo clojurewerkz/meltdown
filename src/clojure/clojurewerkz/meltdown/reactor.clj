@@ -119,12 +119,12 @@
     (.get spec)))
 
 (defn link
-  "Link components together"
+  "Link two reactors together together"
   [^Reactor r1 ^Reactor r2]
   (.link r1 r2))
 
 (defn unlink
-  "Unlink components"
+  "Unlinks two reactors"
   [^Reactor r1 ^Reactor r2]
   (.unlink r1 r2))
 
