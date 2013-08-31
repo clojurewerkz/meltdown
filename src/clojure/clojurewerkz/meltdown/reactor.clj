@@ -65,6 +65,7 @@
      (.on reactor consumer)))
 
 (defn notify
+  "Broadcasts a event instantiated from provided payload (data structure)"
   ([^Reactor reactor payload]
      (.notify reactor (Event. payload)))
   ([^Reactor reactor key payload]
