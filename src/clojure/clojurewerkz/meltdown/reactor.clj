@@ -96,9 +96,11 @@
                          (fn [e]
                            (notify reactor (.getReplyTo e) (f (dissoc (ev/event->map e) :reply-to :id)))))))
 
-;; Router is made for each Reactor, since otherwise reactors _will share_
 (defn ^Reactor create
-  "Creates a reactor instance"
+  "Creates a reactor instance.
+
+   A new router is instantiated for every reactor,
+   otherwise reactors will needlessly share state"
   [& {:keys [dispatcher-type event-routing-strategy env]}]
   (let [spec (Reactors/reactor)]
     (if env
