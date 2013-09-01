@@ -3,7 +3,20 @@
 ### Added dispatcher option to reactor and stream composition
 
 When creating reactor, it's now possible to plug in a custom dispatcher or configure an underlying
-dispatcher in a way that's most suitable for your application.
+dispatcher in a way that's most suitable for your application, for example:
+
+```clj
+(ns my-app.core
+  (:import [reactor.event.dispatch RingBufferDispatcher]
+           [com.lmax.disruptor.dsl ProducerType]
+           [com.lmax.disruptor YieldingWaitStrategy]))
+
+;; Creates a RingBuffer Dispatcher, with a custom queue size of 4096
+(def reactor (mr/create :dispatcher (RingBufferDispatcher. "dispatcher-name"
+                                                            4096
+                                                            ProducerType/MULTI
+                                                            (YieldingWaitStrategy.))))
+```
 
 ## Changes between 1.0.0-alpha2 and 1.0.0-alpha3
 
