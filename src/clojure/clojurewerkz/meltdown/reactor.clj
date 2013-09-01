@@ -98,7 +98,7 @@
 ;; Router is made for each Reactor, since otherwise reactors _will share_
 (defn ^Reactor create
   "Creates a reactor instance"
-  [& {:keys [dispatcher-type event-routing-strategy env]}]
+  [& {:keys [dispatcher-type event-routing-strategy env dispatcher]}]
   (let [spec (Reactors/reactor)]
     (if env
       (.env spec env)
@@ -106,6 +106,8 @@
     (if dispatcher-type
       (.dispatcher spec (dispatcher-type dispatcher-types))
       (.synchronousDispatcher spec))
+    (when dispatcher
+      (.dispatcher spec dispatcher))
     (when event-routing-strategy
       (when (= :first event-routing-strategy)
         (.firstEventRouting spec))
