@@ -1,6 +1,6 @@
 ## Changes between 1.0.0-alpha3 and 1.0.0-alpha4
 
-### Added dispatcher option to reactor composition
+### Added dispatcher option to reactor and stream composition
 
 When creating reactor, it's now possible to plug in a custom dispatcher or configure an underlying
 dispatcher in a way that's most suitable for your application.

@@ -48,7 +48,7 @@
 
 (defn ^Deferred create
   "Creates a processing channel"
-  [& {:keys [dispatcher-type values batch-size env]}]
+  [& {:keys [dispatcher-type dispatcher values batch-size env]}]
   (let [spec (Streams/defer)]
     (if env
       (.env spec env)
@@ -56,6 +56,8 @@
     (if dispatcher-type
       (.dispatcher spec (dispatcher-type dispatcher-types))
       (.synchronousDispatcher spec))
+    (when dispatcher
+      (.dispatcher spec dispatcher))
     (when values
       (.each spec values))
     (when batch-size
