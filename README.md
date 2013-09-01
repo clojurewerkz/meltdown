@@ -32,10 +32,9 @@ Twitter.
 
 ## Project Maturity
 
-Meltdown is **very** (literally alpha) young, yet API hasn't changed
-for quite a long time already. We won't cut a final release until
-underlying Reactor library reaches a stable release. Reactor itself also
-evolves rapidly and is at the alpha stage.
+Meltdown is **very** (literally alpha) young, although the API hasn't changed
+for quite a while. However, as Reactor itself changes rapidly, breaking
+API changes are not out of the question.
 
 
 
@@ -66,7 +65,7 @@ With Maven:
 <dependency>
   <groupId>clojurewerkz</groupId>
   <artifactId>meltdown</artifactId>
-  <version>1.0.0-alpha2</version>
+  <version>1.0.0-alpha3</version>
 </dependency>
 ```
 
@@ -176,8 +175,8 @@ dispatching.
   * default one, syncronous dispatcher, implementation that dispatches
     events using the calling thread.
   * `:event-loop` dispatcher implementation that dispatches events using
-    the calling thread. Together with default syncronous, very useful in
-    development mode.
+    the single dedicated thread. Together with default syncronous dispatcher, 
+    very useful in development mode.
   * `:thread-pool` dispatcher implementation that uses
     `ThreadPoolExecution` with an unbounded queue to dispatch
     events. Works best for long-running tasks.

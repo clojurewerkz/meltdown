@@ -1,9 +1,18 @@
-## Changes between 1.0.0-alpha1 and 1.0.0-alpha2
+## Changes between 1.0.0-alpha3 and 1.0.0-alpha4
+
+### Added dispatcher option to reactor composition
+
+When creating reactor, it's now possible to plug in a custom dispatcher or configure an underlying
+dispatcher in a way that's most suitable for your application.
+
+## Changes between 1.0.0-alpha2 and 1.0.0-alpha3
 
 ### Environment option is added to stream creation
 
 It is only possible to specify type of dispatcher when there's an Environment attached to reactor.
 Option was previously missing.
+
+
 
 ## Changes between 1.0.0-alpha1 and 1.0.0-alpha2
 

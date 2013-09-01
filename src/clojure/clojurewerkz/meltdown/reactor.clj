@@ -45,8 +45,9 @@
    :ring-buffer "ringBuffer"})
 
 (defn maybe-wrap-event
+  "Coerces given into to an Event instance"
   [ev]
-  (if (= Event (type ev))
+  (if (instance? Event ev)
     ev
     (Event. ev)))
 
@@ -65,6 +66,7 @@
      (.on reactor consumer)))
 
 (defn notify
+  "Broadcasts a event instantiated from provided payload (data structure)"
   ([^Reactor reactor payload]
      (.notify reactor (Event. payload)))
   ([^Reactor reactor key payload]
@@ -95,9 +97,11 @@
                          (fn [e]
                            (notify reactor (.getReplyTo e) (f (dissoc (ev/event->map e) :reply-to :id)))))))
 
-;; Router is made for each Reactor, since otherwise reactors _will share_
 (defn ^Reactor create
-  "Creates a reactor instance"
+  "Creates a reactor instance.
+
+   A new router is instantiated for every reactor,
+   otherwise reactors will needlessly share state"
   [& {:keys [dispatcher-type event-routing-strategy env dispatcher]}]
   (let [spec (Reactors/reactor)]
     (if env
@@ -118,15 +122,16 @@
     (.get spec)))
 
 (defn link
-  "Link components together"
+  "Link two reactors together together"
   [^Reactor r1 ^Reactor r2]
   (.link r1 r2))
 
 (defn unlink
-  "Unlink components"
+  "Unlinks two reactors"
   [^Reactor r1 ^Reactor r2]
   (.unlink r1 r2))
 
 (defn responds-to?
+  "Returns true if provded reactor has consumers registered for a particular key"
   [^Reactor reactor key]
   (.respondsToKey reactor key))
