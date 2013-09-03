@@ -102,7 +102,7 @@
 
    A new router is instantiated for every reactor,
    otherwise reactors will needlessly share state"
-  [& {:keys [dispatcher-type event-routing-strategy env]}]
+  [& {:keys [dispatcher-type event-routing-strategy env dispatcher]}]
   (let [spec (Reactors/reactor)]
     (if env
       (.env spec env)
@@ -110,6 +110,8 @@
     (if dispatcher-type
       (.dispatcher spec (dispatcher-type dispatcher-types))
       (.synchronousDispatcher spec))
+    (when dispatcher
+      (.dispatcher spec dispatcher))
     (when event-routing-strategy
       (when (= :first event-routing-strategy)
         (.firstEventRouting spec))

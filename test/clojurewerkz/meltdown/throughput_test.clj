@@ -3,9 +3,11 @@
             [clojurewerkz.meltdown.reactor   :as mr]
             [clojurewerkz.meltdown.selectors :as ms :refer [$]]
             [clojurewerkz.meltdown.consumers :as mc]
-            [clojurewerkz.meltdown.events    :as me]
-            )
-  (:import [java.util.concurrent CountDownLatch TimeUnit]))
+            [clojurewerkz.meltdown.events    :as me])
+  (:import [java.util.concurrent CountDownLatch TimeUnit]
+           [reactor.event.dispatch RingBufferDispatcher]
+           [com.lmax.disruptor.dsl ProducerType]
+           [com.lmax.disruptor YieldingWaitStrategy]))
 
 (defn register-consumers-and-warm-cache
   [reactor objects consumer]
@@ -47,8 +49,8 @@
                 (.getClass)
                 (.getSimpleName))
             " throughput (" elapsed "ms): " (Math/round (float (/ (* selectors iterations) (/ elapsed 1000))))
-            "/sec"
-            )))))))
+            "/sec")))))
+    (.shutdown (.getDispatcher reactor))))
 
 (deftest ^:performance dispatcher-throughput-test
   (testing "Event Loop"
@@ -56,4 +58,6 @@
   (testing "Thread Pool Executor"
     (throughput-test (mr/create :dispatcher-type :thread-pool)))
   (testing "Ring Buffer"
-    (throughput-test (mr/create :dispatcher-type :ring-buffer))))
+    (throughput-test (mr/create :dispatcher-type :ring-buffer)))
+  (testing "Ring Buffer"
+    (throughput-test (mr/create :dispatcher (RingBufferDispatcher. "dispatcher-name" 4096 ProducerType/MULTI (YieldingWaitStrategy.))))))
