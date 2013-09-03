@@ -69,9 +69,11 @@ With Maven:
 </dependency>
 ```
 
-## Basic concepts
+## Documentation
 
-`Reactor` is a routing middleware, that's used to tie events and
+### Basic concepts
+
+`Reactor` is a message passing library, that's used to tie events and
 handlers together. Handlers can be attached to and detached from reactor
 dynamically. When handler is attached to reactor, selector is
 used. Selectors is a way for reactor to know when to call a handler.
@@ -104,7 +106,7 @@ In order to push events into reactor, you can use `notify`:
 (mr/notify r "key" {:my "payload"})
 ```
 
-## Selectors
+### Selectors
 
 There're two types of selectors supported: exact match and regular
 expression. Exact match should be used for cases when you want handler
@@ -136,7 +138,7 @@ many event keys based on some pattern, for example:
 (mr/notify reactor "Asia.China" {:teh :payload}) ;; will fire none
 ```
 
-## Routing strategies
+### Routing Strategies
 
 Whenever you have more than a single handler attached for selector, you
 can define a routing strategy:
@@ -166,7 +168,7 @@ to `create` function, for example:
 (mr/create :event-routing-strategy :broadcast)
 ```
 
-## Dispatchers
+### Dispatchers
 
 There are several types of dispatchers, providing you a toolkit for both
 threadpool-style long-running execution to high-throughput task
@@ -192,7 +194,7 @@ preference, pass `:dispatcher-type` to `create` function, for example:
 (mr/create :dispatcher-type :ring-buffer)
 ```
 
-## Request/response pattern
+### Request/response Pattern
 
 It is possible to receive get a callback from the callee. In order to
 implement request-response with callback, use `send-event`
@@ -216,7 +218,7 @@ callback function whenever response is received, you can do it that way:
                                             ))
 ```
 
-## Stream processing
+### Stream Processing
 
 Two main concepts in stream processing are `channel` and `stream`. You
 can publish information to `channel`, create arbitrary amount of streams
