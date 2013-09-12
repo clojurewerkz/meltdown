@@ -32,7 +32,7 @@ Twitter.
 
 ## Project Maturity
 
-Meltdown is **very** (literally alpha) young, although the API hasn't changed
+Meltdown is **young**, although the API hasn't changed
 for quite a while. However, as Reactor itself changes rapidly, breaking
 API changes are not out of the question.
 
@@ -56,7 +56,7 @@ are using Maven, add the following repository definition to your `pom.xml`:
 With Leiningen:
 
 ```clj
-[clojurewerkz/meltdown "1.0.0-alpha3"]
+[clojurewerkz/meltdown "1.0.0-beta1"]
 ```
 
 With Maven:
@@ -65,7 +65,7 @@ With Maven:
 <dependency>
   <groupId>clojurewerkz</groupId>
   <artifactId>meltdown</artifactId>
-  <version>1.0.0-alpha3</version>
+  <version>1.0.0-beta1</version>
 </dependency>
 ```
 
