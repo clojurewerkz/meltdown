@@ -1,4 +1,4 @@
-## Changes between 1.0.0-alpha3 and 1.0.0-alpha4
+## Changes between 1.0.0-alpha3 and 1.0.0-beta1
 
 ### Added dispatcher option to reactor and stream composition
 
