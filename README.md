@@ -314,7 +314,7 @@ value:
 ```clj
 (def channel (create))
 
-(def result (atom nil))
+(def res (atom nil))
 
 (def sum (reduce* #(+ %1 %2) 0 channel)
 (consume sum #(reset! res %))
