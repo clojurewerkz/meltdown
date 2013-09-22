@@ -103,7 +103,7 @@ handler.
 In order to push events into reactor, you can use `notify`:
 
 ```clj
-(mr/notify r "key" {:my "payload"})
+(mr/notify reactor "key" {:my "payload"})
 ```
 
 ### Selectors
