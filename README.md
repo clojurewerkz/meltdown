@@ -242,14 +242,14 @@ streams with attached consumers that would calculate incremented and
 decremented values for incoming ints:
 
 ```clj
-user> (let [channel (create)
-            incremented-values (map* inc channel)
-            decremented-values (map* dec channel)]
-        (consume incremented-values (fn [i] (println "Incremented value: " i)))
-        (consume decremented-values (fn [i] (println "Decremented value: " i)))
-        (accept channel 1)
-        (accept channel 2)
-        (accept channel 3))
+(let [channel (create)
+      incremented-values (map* inc channel)
+      decremented-values (map* dec channel)]
+  (consume incremented-values (fn [i] (println "Incremented value: " i)))
+  (consume decremented-values (fn [i] (println "Decremented value: " i)))
+  (accept channel 1)
+  (accept channel 2)
+  (accept channel 3))
 ;; => Incremented value:  2
 ;; => Decremented value:  0
 ;; => Incremented value:  3
@@ -263,11 +263,11 @@ filtered or batched:
 
 ```clj
 (let [channel (create)
-            incremented-values (map* inc channel)
-            squared-values (map* (fn [i] (* i i)) incremented-values)]
-        (consume squared-values (fn [i] (println "Incremented and squared value: " i)))
-        (accept channel 1)
-        (accept channel 2))
+      incremented-values (map* inc channel)
+      squared-values (map* (fn [i] (* i i)) incremented-values)]
+  (consume squared-values (fn [i] (println "Incremented and squared value: " i)))
+  (accept channel 1)
+  (accept channel 2))
 ;; => Incremented and squared value:  4
 ;; => Incremented and squared value:  9
 ```
@@ -279,14 +279,14 @@ which predicate matches further:
 
 ```clj
 (let [channel (create)
-            even-values (filter* even? channel)
-            odd-values  (filter* odd? channel)]
-        (consume even-values (fn [i] (println "Got an even value: " i)))
-        (consume odd-values (fn [i] (println "Got an odd value: " i)))
-        (accept channel 1)
-        (accept channel 2)
-        (accept channel 3)
-        (accept channel 4))
+      even-values (filter* even? channel)
+      odd-values  (filter* odd? channel)]
+  (consume even-values (fn [i] (println "Got an even value: " i)))
+  (consume odd-values (fn [i] (println "Got an odd value: " i)))
+  (accept channel 1)
+  (accept channel 2)
+  (accept channel 3)
+  (accept channel 4))
 ;; => Got an odd value:  1
 ;; => Got an even value:  2
 ;; => Got an odd value:  3
@@ -301,12 +301,12 @@ value:
 
 ```clj
 (let [channel (create)
-            res (atom nil)
-            sum (reduce* #(+ %1 %2) 0 channel)]
-        (consume sum #(reset! res %))
-        (accept channel 1)
-        (accept channel 2)
-        (accept channel 3)
+      res (atom nil)
+      sum (reduce* #(+ %1 %2) 0 channel)]
+  (consume sum #(reset! res %))
+  (accept channel 1)
+  (accept channel 2)
+  (accept channel 3)
         @res)
 ;; => 6
 ```
@@ -380,14 +380,14 @@ instead of usual `streams` one.
   (:use clojurewerkz.meltdown.stream-graph))
 
 (let [res (atom nil)
-            channel (graph (create)
-                           (map* inc
-                                 (reduce* #(+ %1 %2) 0
-                                          (consume #(reset! res %)))))]
-        (accept channel 1)
-        (accept channel 2)
-        (accept channel 3)
-        @res)
+      channel (graph (create)
+                     (map* inc
+                         (reduce* #(+ %1 %2) 0
+                                    (consume #(reset! res %)))))]
+  (accept channel 1)
+  (accept channel 2)
+  (accept channel 3)
+  @res)
 ;; => 9
 ```
 
