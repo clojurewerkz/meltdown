@@ -242,43 +242,34 @@ streams with attached consumers that would calculate incremented and
 decremented values for incoming ints:
 
 ```clj
-(ns :my-streams
-  (:use clojurewerkz.meltdown.streams))
-
-(def channel (create)) ;; creates a channel
-
-(def incremented-values (map* inc channel))
-(def decremented-values (map* dec channel))
-
-(consume incremented-values (fn [i] (println "Incremented value: " i)))
-(consume decremented-values (fn [i] (println "Decremented value: " i)))
-
-(accept channel 1)
-;; => "Incremented value: 2
-;; => "Decremented value: 0
-(accept channel 2)
-;; => "Incremented value: 3
-;; => "Decremented value: 1
-(accept channel 3)
-;; => "Incremented value: 4
-;; => "Decremented value: 2
+user> (let [channel (create)
+            incremented-values (map* inc channel)
+            decremented-values (map* dec channel)]
+        (consume incremented-values (fn [i] (println "Incremented value: " i)))
+        (consume decremented-values (fn [i] (println "Decremented value: " i)))
+        (accept channel 1)
+        (accept channel 2)
+        (accept channel 3))
+;; => Incremented value:  2
+;; => Decremented value:  0
+;; => Incremented value:  3
+;; => Decremented value:  1
+;; => Incremented value:  4
+;; => Decremented value:  2
 ```
 
 You can also apply `map*` to streams that were already "mapped", reduced
 filtered or batched:
 
 ```clj
-(def channel (create))
-
-(def incremented-values (map* inc channel))
-(def squared-values (map* (fn [i] (* i i) incremented-values)))
-
-(consume squared-values (fn [i] (println "Incremented and squared value: " i)))
-
-(accept channel 1)
-;; => Incremented and squared value: 4
-(accept channel 2)
-;; => Incremented and squared value: 9
+(let [channel (create)
+            incremented-values (map* inc channel)
+            squared-values (map* (fn [i] (* i i)) incremented-values)]
+        (consume squared-values (fn [i] (println "Incremented and squared value: " i)))
+        (accept channel 1)
+        (accept channel 2))
+;; => Incremented and squared value:  4
+;; => Incremented and squared value:  9
 ```
 
 ### `filter*` operation
@@ -287,22 +278,19 @@ filtered or batched:
 which predicate matches further:
 
 ```clj
-(def channel (create))
-
-(def even-numbers (filter* even? channel))
-(def odd-numbers  (filter* odd? channel))
-
-(consume even-values (fn [i] (println "Got an even value: " i)))
-(consume odd-values (fn [i] (println "Got an odd value: " i)))
-
-(accept channel 1)
-;; => Got an odd value: 1
-(accept channel 2)
-;; => Got an even value: 2
-(accept channel 3)
-;; => Got an odd value: 3
-(accept channel 4)
-;; => Got an even value: 4
+(let [channel (create)
+            even-values (filter* even? channel)
+            odd-values  (filter* odd? channel)]
+        (consume even-values (fn [i] (println "Got an even value: " i)))
+        (consume odd-values (fn [i] (println "Got an odd value: " i)))
+        (accept channel 1)
+        (accept channel 2)
+        (accept channel 3)
+        (accept channel 4))
+;; => Got an odd value:  1
+;; => Got an even value:  2
+;; => Got an odd value:  3
+;; => Got an even value:  4
 ```
 
 ### `reduce*` operation
@@ -312,18 +300,15 @@ except for it gets values from the stream and holds last accumulator
 value:
 
 ```clj
-(def channel (create))
-
-(def result (atom nil))
-
-(def sum (reduce* #(+ %1 %2) 0 channel)
-(consume sum #(reset! res %))
-
-(accept channel 1)
-(accept channel 2)
-(accept channel 3)
-
-@res ;; => 6
+(let [channel (create)
+            res (atom nil)
+            sum (reduce* #(+ %1 %2) 0 channel)]
+        (consume sum #(reset! res %))
+        (accept channel 1)
+        (accept channel 2)
+        (accept channel 3)
+        @res)
+;; => 6
 ```
 
 ### `batch*` operation
@@ -359,20 +344,26 @@ you can use let-over-lamda:
 You can use custom streams same way as you usually use internal ones:
 
 ```clj
-(def channel (create))
-
-(def result (atom nil))
-
-(def incrementer (map* inc channel)
-(def inst-every-fifth-stream (every-fifth-stream incrememter))
-(consume inst-every-fifth-stream #(reset! res %))
-
-(accept channel 1) ;; @res is still `nil`
-(accept channel 2) ;; @res is still `nil`
-(accept channel 3) ;; @res is still `nil`
-(accept channel 4) ;; @res is still `nil`
-(accept channel 5)
-@res ;; => 6
+(let [channel (create)
+      res (atom nil)
+      incrementer (map* inc channel)
+      inst-every-fifth-stream (every-fifth-stream incrementer)]
+  (consume inst-every-fifth-stream #(reset! res %))
+  (accept channel 1)
+  (println @res)
+  (accept channel 2)
+  (println @res)
+  (accept channel 3)
+  (println @res)
+  (accept channel 4)
+  (println @res)
+  (accept channel 5)
+  @res)
+;; => nil
+;; => nil
+;; => nil
+;; => nil
+;; => 6
 ```
 
 ### Building declarative graphs
@@ -388,18 +379,15 @@ instead of usual `streams` one.
 (ns my-stream-graphs-ns
   (:use clojurewerkz.meltdown.stream-graph))
 
-(def res (atom nil))
-
-(def channel (graph (create)
-                    (map* inc
-                          (reduce* #(+ %1 %2) 0
-                                   (consume #(reset! res %))))))
-
-(accept channel 1)
-(accept channel 2)
-(accept channel 3)
-
-@res
+(let [res (atom nil)
+            channel (graph (create)
+                           (map* inc
+                                 (reduce* #(+ %1 %2) 0
+                                          (consume #(reset! res %)))))]
+        (accept channel 1)
+        (accept channel 2)
+        (accept channel 3)
+        @res)
 ;; => 9
 ```
 
