@@ -107,11 +107,11 @@
     (if env
       (.env spec env)
       (.env spec (environment)))
-    (if dispatcher-type
-      (.dispatcher spec (dispatcher-type dispatcher-types))
-      (.synchronousDispatcher spec))
-    (when dispatcher
-      (.dispatcher spec dispatcher))
+    (if dispatcher
+      (.dispatcher spec dispatcher)
+      (if dispatcher-type
+        (.dispatcher spec (dispatcher-type dispatcher-types))
+        (.synchronousDispatcher spec)))
     (when event-routing-strategy
       (when (= :first event-routing-strategy)
         (.firstEventRouting spec))
