@@ -177,7 +177,7 @@ dispatching.
   * default one, syncronous dispatcher, implementation that dispatches
     events using the calling thread.
   * `:event-loop` dispatcher implementation that dispatches events using
-    the single dedicated thread. Together with default syncronous dispatcher, 
+    the single dedicated thread. Together with default syncronous dispatcher,
     very useful in development mode.
   * `:thread-pool` dispatcher implementation that uses
     `ThreadPoolExecution` with an unbounded queue to dispatch
@@ -428,6 +428,34 @@ even and odd values separately:
   ;; => 8
   )
 ```
+
+## Error handling
+
+Whenever an Exception occurs inside of your processing pipeline,
+downstreams won't receive any events. In order to debug your
+pipeline and see what exactly happened, you should subscribe
+to the `Exception` events by using `on-error`.
+
+Most generic case would be:
+
+```clj
+(mr/on-error r Exception (fn [event]
+                           (println event)))
+```
+
+So whenever __any__ `Exception` (of any type) occurs inside your
+processing pipeline, your handler will be executed. You can also use
+subclasses:
+
+```clj
+(mr/on-error r RuntimeException (fn [event]
+                                  (println event)))
+```
+
+In this case your handler will be only triggered when type of an occured
+exception is `RuntimeException` or one of the derived classes.
+
+You can have more than one handler per `Exception` type.
 
 ## Practical applications
 
