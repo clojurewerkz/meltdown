@@ -23,7 +23,7 @@
             [clojurewerkz.meltdown.selectors :as msel])
   (:import [reactor.event.routing EventRouter Linkable ConsumerFilteringEventRouter
             ArgumentConvertingConsumerInvoker]
-           [reactor.event.selector Selector]
+           [reactor.event.selector Selector Selectors]
            [reactor.event.registry Registry CachingRegistry]
            [reactor.filter PassThroughFilter]
            [reactor.core Environment]
@@ -57,6 +57,11 @@
      (.on reactor selector (mc/from-fn f)))
   ([^Reactor reactor ^IFn f]
      (.on reactor (mc/from-fn f))))
+
+(defn on-error
+  "Registers a Clojure function as event handler for a class of Exception."
+  [^Reactor reactor exception-type ^IFn f]
+  (.on reactor (msel/T exception-type) (mc/from-fn f)))
 
 (defn register-consumer
   "Registers a Clojure function as event handler for a particular kind of events."

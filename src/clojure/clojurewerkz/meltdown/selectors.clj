@@ -26,3 +26,9 @@
 (defn ^Selector R
   [^String regex]
   (Selectors/R regex))
+
+(defn ^Selector T
+  "Creates a `Selector` based on the given class type that matches
+   objects whose type is assignable according to `Class.isAssignableFrom(Class)`"
+  [c]
+  (Selectors/T c))

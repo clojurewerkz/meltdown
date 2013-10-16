@@ -87,6 +87,7 @@
         (is (= {} (:headers d)))
         (is (= "delivered" (get-in d [:data :event])))))))
 
+
 (deftest routing-strategies
   (testing "First routing strategy"
     (with-latch 1
@@ -149,3 +150,20 @@
 
     (is (mr/responds-to? r "key"))
     (is (not (mr/responds-to? r "other")))))
+
+(deftest test-error-listener-reactors
+  (with-latch 1
+    (let [key "events.silly"
+          r   (mr/create)
+          e   (atom nil)]
+      (mr/on r ($ key) (fn [event]
+                         (throw (RuntimeException. "Red Alert!"))))
+
+      (mr/on-error r Exception (fn [event]
+                                 (.countDown latch)
+                                 (reset! e (:data event))))
+
+      (mr/notify r key {})
+      (Thread/sleep 100)
+
+      (is (instance? RuntimeException @e)))))
