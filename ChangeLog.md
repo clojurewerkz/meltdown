@@ -4,6 +4,23 @@
 
 Reactor is updated to `1.0.0.RC1`.
 
+### Error handling improvements
+
+You can add listeners for `Exceptions` that are occuring inside of your processing pipeline by
+subscribing to events based on the `class` of exception. For example, in order to subscribe
+to all Exceptions, you can:
+
+```clj
+(mr/on-error r Exception (fn [event]
+                           (println event)))
+```
+
+In order to subscribe to only `RuntimeExceptions`:
+
+```clj
+(mr/on-error r RuntimeException (fn [event]
+                                  (println event)))
+```
 
 ## Changes between 1.0.0-alpha3 and 1.0.0-beta1
 
