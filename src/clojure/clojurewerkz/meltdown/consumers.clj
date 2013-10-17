@@ -17,23 +17,20 @@
   (:require [clojurewerkz.meltdown.events :as ev])
   (:import [reactor.function Consumer]
            [reactor.event.registry Registration]
+           [meltdown IFnConsumer IFnTransformingConsumer]
            clojure.lang.IFn))
 
 (defn ^Consumer from-fn
   "Instantiates a reactor consumer from a Clojure
    function"
   [^IFn f]
-  (reify Consumer
-    (accept [this event]
-      (f (ev/event->map event)))))
+  (IFnTransformingConsumer. f ev/event->map))
 
 (defn ^Consumer from-fn-raw
   "Instantiates a reactor consumer from a Clojure
    function"
   [^IFn f]
-  (reify Consumer
-    (accept [this event]
-      (f event))))
+  (IFnConsumer. f))
 
 (defn ^boolean paused?
   [^Registration reg]

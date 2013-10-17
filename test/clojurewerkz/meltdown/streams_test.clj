@@ -8,16 +8,17 @@
 (deftest basic-stream-map-test
   (let [channel (create)
         stream  (map* inc channel)
-        stream2  (map* #(+ 2 %) stream)
-        stream3  (map* #(+ 3 %) stream2)
+        stream2 (map* #(+ 2 %) stream)
+        stream3 (map* #(+ 3 %) stream2)
 
-        res (atom {})]
+        res     (atom {})]
 
     (consume stream (fn [v] (swap! res assoc :first v)))
     (consume stream2 (fn [v] (swap! res assoc :second v)))
     (consume stream3 (fn [v] (swap! res assoc :third v)))
 
     (accept channel 1)
+
     (let [d @res]
       (is (= 2 (:first d)))
       (is (= 4 (:second d)))

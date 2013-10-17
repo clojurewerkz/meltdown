@@ -1,8 +1,7 @@
 (ns clojurewerkz.meltdown.stream-graph-test
   (:require [clojure.test :refer :all]
-            [clojurewerkz.meltdown.streams :as ms])
-  (:use clojurewerkz.meltdown.stream-graph
-        clojure.test))
+            [clojurewerkz.meltdown.streams :as ms]
+            [clojurewerkz.meltdown.stream-graph :refer :all]))
 
 (alter-var-root #'*out* (constantly *out*))
 
