@@ -24,13 +24,14 @@
   ([c i]
      (lazy-cat c (gen-objects [(str "test" i)] (inc i)))))
 
+(declare latch)
 (defn throughput-test
   [reactor]
   (let [selectors  250
         iterations 7500
         test-runs  3
+        _          (def latch (CountDownLatch. (* selectors iterations)))
         objects    (vec (take selectors (gen-objects)))
-        latch      (CountDownLatch. (* test-runs selectors iterations))
         consumer   (mc/from-fn-raw (fn [_] (.countDown latch)))
         hello      (me/ev :data "Hello World!")]
     (time
@@ -40,6 +41,7 @@
         (dotimes [i iterations]
           (doseq [o objects]
             (mr/notify-raw ^Reactor reactor o ^Event hello)))
+        (.await latch)
         (let [end (System/currentTimeMillis)
               elapsed (- end start)]
           (println
@@ -49,7 +51,8 @@
                 (.getClass)
                 (.getSimpleName))
             " throughput (" elapsed "ms): " (Math/round (float (/ (* selectors iterations) (/ elapsed 1000))))
-            "/sec")))))
+            "/sec")))
+        (def latch (CountDownLatch. (* selectors iterations)))))
     (.shutdown (.getDispatcher reactor))))
 
 (deftest ^:performance dispatcher-throughput-test
