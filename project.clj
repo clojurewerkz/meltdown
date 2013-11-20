@@ -1,12 +1,12 @@
 (defproject clojurewerkz/meltdown "1.0.0-beta3-SNAPSHOT"
   :description "Clojure interface to Reactor, an event-driven programming toolkit for the JVM"
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [org.projectreactor/reactor-core "1.0.0.RC1"]]
+                 [org.projectreactor/reactor-core "1.0.0.RELEASE"]]
   :profiles {:1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
              :1.6 {:dependencies [[org.clojure/clojure "1.6.0-master-SNAPSHOT"]]}
              :master {:dependencies [[org.clojure/clojure "1.6.0-master-SNAPSHOT"]]}
              :dev {:resource-paths ["test/resources"]
-                   :dependencies   [[com.lmax/disruptor "3.0.1"]]
+                   :dependencies   [[com.lmax/disruptor "3.2.0"]]
                    :plugins [[codox "0.6.4"]]
                    :codox {:sources ["src/clojure"]
                            :output-dir "doc/api"}}}
@@ -19,6 +19,8 @@
                  "springsource-snapshots" {:url "http://repo.springsource.org/libs-snapshot"
                                            :snapshots true
                                            :releases {:checksum :fail :update :always}}
+                 "springsource-releases" {:url "http://repo.springsource.org/libs-release"
+                                          :releases {:checksum :fail :update :always}}
                  "sonatype-snapshots" {:url "http://oss.sonatype.org/content/repositories/snapshots"
                                        :snapshots true
                                        :releases {:checksum :fail :update :always}}}

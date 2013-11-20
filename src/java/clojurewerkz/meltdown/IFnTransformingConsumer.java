@@ -1,6 +1,5 @@
-package meltdown;
+package clojurewerkz.meltdown;
 
-import reactor.core.Observable;
 import clojure.lang.IFn;
 import reactor.function.Consumer;
 

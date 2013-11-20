@@ -17,7 +17,7 @@
   (:require [clojurewerkz.meltdown.events :as ev])
   (:import [reactor.function Consumer]
            [reactor.event.registry Registration]
-           [meltdown IFnConsumer IFnTransformingConsumer]
+           [clojurewerkz.meltdown IFnConsumer IFnTransformingConsumer]
            clojure.lang.IFn))
 
 (defn ^Consumer from-fn
