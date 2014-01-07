@@ -33,7 +33,7 @@ Twitter.
 ## Project Maturity
 
 Meltdown is **young**, although the API hasn't changed
-for quite a while. However, as Reactor itself changes rapidly, breaking
+in a while. However, as Reactor itself is young, breaking
 API changes are not out of the question.
 
 
