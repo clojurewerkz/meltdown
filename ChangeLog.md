@@ -1,3 +1,10 @@
+## Changes between 1.0.0-beta2 and 1.0.0-beta3
+
+### Reactor Update
+
+Reactor is updated to `1.0.0.RELEASE`.
+
+
 ## Changes between 1.0.0-beta1 and 1.0.0-beta2
 
 ### Reactor Update
