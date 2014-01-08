@@ -32,7 +32,7 @@
         test-runs  3
         _          (def latch (CountDownLatch. (* selectors iterations)))
         objects    (vec (take selectors (gen-objects)))
-        consumer   (mc/from-fn-raw (fn [_] (.countDown latch)))
+        consumer   (mc/from-fn-raw (fn [_] (.countDown ^CountDownLatch latch)))
         hello      (me/ev :data "Hello World!")]
     (time
      (register-consumers-and-warm-cache reactor objects consumer))
