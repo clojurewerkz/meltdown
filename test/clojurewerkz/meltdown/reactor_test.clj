@@ -9,6 +9,7 @@
 (defmacro with-latch
   [countdown-from & body]
   `(let [latch# (CountDownLatch. ~countdown-from)
+         ;; intentionally unhygienic, expected by @body
          ~'latch latch#]
      ~@body
      (.await latch# 1 TimeUnit/SECONDS)
