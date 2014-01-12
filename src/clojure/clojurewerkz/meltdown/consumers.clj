@@ -36,10 +36,6 @@
   [^Registration reg]
   (.isPaused reg))
 
-(defn ^boolean paused?
-  [^Registration reg]
-  (.isPaused reg))
-
 (defn ^Registration pause
   [^Registration reg]
   (.pause reg))

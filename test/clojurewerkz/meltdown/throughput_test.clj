@@ -6,6 +6,8 @@
             [clojurewerkz.meltdown.events    :as me])
   (:import [java.util.concurrent CountDownLatch TimeUnit]
            [reactor.event.dispatch RingBufferDispatcher]
+           [reactor.event Event]
+           [reactor.core Reactor]
            [com.lmax.disruptor.dsl ProducerType]
            [com.lmax.disruptor YieldingWaitStrategy]))
 

@@ -57,7 +57,7 @@
       (is (= 6 d)))))
 
 
-(deftest basic-stream-map-filter-reduce-test
+(deftest basic-stream-map-filter-reduce-test-2
   (let [res1 (atom nil)
         res2 (atom nil)
         summarizer #(+ %1 %2)
