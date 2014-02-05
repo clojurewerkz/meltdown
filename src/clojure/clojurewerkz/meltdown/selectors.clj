@@ -21,7 +21,7 @@
      (Selectors/$ sel))
   ([]
      (let [sel (Selectors/$)]
-       [(.getT1 sel) (.getT2 sel)])))
+       [sel (.getObject sel)])))
 
 (defn ^Selector R
   [^String regex]

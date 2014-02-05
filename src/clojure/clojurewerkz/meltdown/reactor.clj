@@ -21,7 +21,7 @@
   (:require [clojurewerkz.meltdown.consumers :as mc]
             [clojurewerkz.meltdown.events :as ev]
             [clojurewerkz.meltdown.selectors :as msel])
-  (:import [reactor.event.routing EventRouter Linkable ConsumerFilteringEventRouter
+  (:import [reactor.event.routing EventRouter ConsumerFilteringEventRouter
             ArgumentConvertingConsumerInvoker]
            [reactor.event.selector Selector Selectors]
            [reactor.event.registry Registry CachingRegistry]
@@ -125,16 +125,6 @@
       (when (= :broadcast event-routing-strategy)
         (.broadcastEventRouting spec)))
     (.get spec)))
-
-(defn link
-  "Link two reactors together together"
-  [^Reactor r1 ^Reactor r2]
-  (.link r1 r2))
-
-(defn unlink
-  "Unlinks two reactors"
-  [^Reactor r1 ^Reactor r2]
-  (.unlink r1 r2))
 
 (defn responds-to?
   "Returns true if provded reactor has consumers registered for a particular key"

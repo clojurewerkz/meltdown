@@ -90,7 +90,7 @@
    streams the resulting array of values further down."
   [i deferred-or-stream]
   (map* #(into [] %)
-        (.collect (.batch (maybe-compose deferred-or-stream) i))))
+        (.collect (maybe-compose deferred-or-stream) i)))
 
 (defn reduce*
   "Defines an aggregator funciton that will apply previous aggregator value and new incoming event

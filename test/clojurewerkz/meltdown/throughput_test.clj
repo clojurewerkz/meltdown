@@ -65,4 +65,9 @@
   (testing "Ring Buffer"
     (throughput-test (mr/create :dispatcher-type :ring-buffer)))
   (testing "Ring Buffer"
-    (throughput-test (mr/create :dispatcher (RingBufferDispatcher. "dispatcher-name" 4096 ProducerType/MULTI (YieldingWaitStrategy.))))))
+    (throughput-test (mr/create :dispatcher (RingBufferDispatcher.
+                                             "dispatcher-name"
+                                             (int 4096)
+                                             nil
+                                             ProducerType/MULTI
+                                             (YieldingWaitStrategy.))))))

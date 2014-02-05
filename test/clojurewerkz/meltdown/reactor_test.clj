@@ -53,11 +53,11 @@
 
 (deftest test-request-response
   (with-latch 2
-    (let [r              (mr/create)
-          key            "hello"
-          selector       ($ key)
+    (let [r                                (mr/create)
+          key                              "hello"
+          selector                         ($ key)
           [reply-to-selector reply-to-key] ($)
-          res            (atom nil)]
+          res                              (atom nil)]
 
       (mr/receive-event r selector (fn [_]
                                      (.countDown latch)
@@ -128,22 +128,6 @@
         (mr/notify r "key" {})
 
         (.await latch 1 TimeUnit/SECONDS)))))
-
-(deftest test-linked-reactors
-  (with-latch 3
-    (let [r     (mr/create)
-          r2    (mr/create)
-          res   (atom nil)]
-      (mr/link r r2)
-
-      (mr/on r ($ key) (fn [event]
-                         (.countDown latch)))
-      (mr/on r ($ key) (fn [event]
-                         (dotimes [i 2] (.countDown latch))))
-
-      (mr/notify r key {})
-      (.await latch 1 TimeUnit/SECONDS))))
-
 
 (deftest test-responds-to
   (let [r     (mr/create)]
