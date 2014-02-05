@@ -12,7 +12,7 @@
            [com.lmax.disruptor YieldingWaitStrategy]))
 
 (defn register-consumers-and-warm-cache
-  [reactor objects consumer]
+  [^Reactor reactor objects consumer]
   (doseq [o objects]
     (mr/register-consumer reactor ($ o) consumer))
 
@@ -26,9 +26,9 @@
   ([c i]
      (lazy-cat c (gen-objects [(str "test" i)] (inc i)))))
 
-(declare latch)
+(declare ^CountDownLatch latch)
 (defn throughput-test
-  [reactor]
+  [^Reactor reactor]
   (let [selectors  250
         iterations 7500
         test-runs  3

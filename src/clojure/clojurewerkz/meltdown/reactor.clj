@@ -99,7 +99,7 @@
    reply-to is a (relatively) expensive operation"
   [^Reactor reactor selector ^IFn f]
   (.on reactor selector (mc/from-fn-raw
-                         (fn [e]
+                         (fn [^Event e]
                            (notify reactor (.getReplyTo e) (f (dissoc (ev/event->map e) :reply-to :id)))))))
 
 (defn ^Reactor create
@@ -107,7 +107,7 @@
 
    A new router is instantiated for every reactor,
    otherwise reactors will needlessly share state"
-  [& {:keys [dispatcher-type event-routing-strategy env dispatcher]}]
+  [& {:keys [^DeferredStreamSpec dispatcher-type event-routing-strategy ^Environment env ^Dispatcher dispatcher]}]
   (let [spec (Reactors/reactor)]
     (if env
       (.env spec env)
@@ -115,7 +115,7 @@
     (if dispatcher
       (.dispatcher spec dispatcher)
       (if dispatcher-type
-        (.dispatcher spec (dispatcher-type dispatcher-types))
+        (.dispatcher spec ^String (dispatcher-type dispatcher-types))
         (.synchronousDispatcher spec)))
     (when event-routing-strategy
       (when (= :first event-routing-strategy)

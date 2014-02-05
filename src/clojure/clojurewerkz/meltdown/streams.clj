@@ -15,6 +15,8 @@
 (ns clojurewerkz.meltdown.streams
   (:import [reactor.core.composable.spec Streams]
            [reactor.core.composable Stream Deferred]
+           [reactor.core.composable.spec DeferredStreamSpec]
+           [reactor.event.dispatch Dispatcher]
            [reactor.core Environment]
            [reactor.function Function Predicate]
            [reactor.tuple Tuple2]
@@ -48,13 +50,13 @@
 
 (defn ^Deferred create
   "Creates a processing channel"
-  [& {:keys [dispatcher-type dispatcher values batch-size env]}]
-  (let [spec (Streams/defer)]
+  [& {:keys [dispatcher-type ^Dispatcher dispatcher values batch-size ^Environment env]}]
+  (let [^DeferredStreamSpec spec (Streams/defer)]
     (if env
       (.env spec env)
       (.env spec (environment)))
     (if dispatcher-type
-      (.dispatcher spec (dispatcher-type dispatcher-types))
+      (.dispatcher spec ^String (dispatcher-type dispatcher-types))
       (.synchronousDispatcher spec))
     (when dispatcher
       (.dispatcher spec dispatcher))
@@ -68,22 +70,25 @@
   [^Stream stream value]
   (.accept stream value))
 
-(defn- maybe-compose
+(defn- ^Stream maybe-compose
   [deferred-or-stream]
   (if (instance? Deferred deferred-or-stream)
-    (.compose deferred-or-stream)
+    (let [deferred ^Deferred deferred-or-stream]
+        (.compose deferred))
     deferred-or-stream))
 
 (defn map*
   "Defines a map function, that will apply `f` to all events going through it."
   [f deferred-or-stream]
-  (.map (maybe-compose deferred-or-stream) (fn->function f)))
+  (let [stream (maybe-compose deferred-or-stream)]
+    (.map stream (fn->function f))))
 
 (defn filter*
   "Defines a filter function, that will apply predicate `f` to all events going through it
    and will stream only those for which predicate returned truthy value."
   [f deferred-or-stream]
-  (.filter (maybe-compose deferred-or-stream) (fn->predicate f)))
+  (let [stream (maybe-compose deferred-or-stream)]
+    (.filter stream (fn->predicate f))))
 
 (defn batch*
   "Defines a batch function that will accumulate values until it's reaches count of `i`, and
