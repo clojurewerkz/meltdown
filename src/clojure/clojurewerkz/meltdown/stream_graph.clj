@@ -1,4 +1,4 @@
-;; Copyright (c) 2013 The ClojureWerkz team and contributors.
+;; Copyright (c) 2013-2014 Michael S. Klishin, Alex Petrov, and the ClojureWerkz Team.
 ;;
 ;; Licensed under the Apache License, Version 2.0 (the "License");
 ;; you may not use this file except in compliance with the License.
