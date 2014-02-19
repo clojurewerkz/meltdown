@@ -1,3 +1,11 @@
+## Changes between 1.0.0-beta3 and 1.0.0-beta4
+
+### Reactor Update
+
+Reactor is updated to `1.1.0.M1` which has multiple breaking API
+changes.
+
+
 ## Changes between 1.0.0-beta2 and 1.0.0-beta3
 
 ### Reactor Update
