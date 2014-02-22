@@ -17,6 +17,7 @@
            [clojure.lang IPersistentMap]))
 
 (defn event->map
+  "Converts Reactor event to immutable Clojure map"
   [^Event event]
   {:data     (.getData event)
    :reply-to (.getReplyTo event)
