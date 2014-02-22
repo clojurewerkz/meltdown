@@ -20,7 +20,8 @@
 
 (defmacro graph
   "Creates a stream processing graph"
-  ([channel] channel)
+  ([channel]
+     channel)
   ([channel & downstreams]
      `(let [~'upstream ~channel]
         ~@downstreams
@@ -41,7 +42,8 @@
 
 (defmacro map*
   "Like clojure.core/map but for graph computations"
-  ([f] `(ms/map* ~f ~'upstream))
+  ([f]
+     `(ms/map* ~f ~'upstream))
   ([f & downstreams]
      `(let [~'upstream (ms/map* ~f ~'upstream)]
         ~@downstreams
@@ -49,14 +51,16 @@
 
 (defmacro filter*
   "Like clojure.core/filter but for graph computations"
-  ([f] `(ms/filter* ~f ~'upstream))
+  ([f]
+     `(ms/filter* ~f ~'upstream))
   ([f & downstreams]
      `(let [~'upstream (ms/filter* ~f ~'upstream)]
         ~@downstreams
         ~'upstream)))
 
 (defmacro batch*
-  ([f] `(ms/batch* ~f ~'upstream))
+  ([f]
+     `(ms/batch* ~f ~'upstream))
   ([f & downstreams]
      `(let [~'upstream (ms/batch* ~f ~'upstream)]
         ~@downstreams
@@ -64,7 +68,8 @@
 
 (defmacro reduce*
   "Like clojure.core/reduce but for graph computations"
-  ([f default-value] `(ms/reduce* ~f ~default-value ~'upstream))
+  ([f default-value]
+     `(ms/reduce* ~f ~default-value ~'upstream))
   ([f default-value & downstreams]
      `(let [~'upstream (ms/reduce* ~f ~default-value ~'upstream)]
         ~@downstreams
