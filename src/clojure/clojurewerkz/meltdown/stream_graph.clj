@@ -38,7 +38,8 @@
 (defmacro attach
   "Attaches parts back to the graph as if they were declared as a part of the graph from the
    beginning."
-  [detached] `(~detached ~'upstream))
+  [detached]
+  `(~detached ~'upstream))
 
 (defmacro map*
   "Like clojure.core/map but for graph computations"
