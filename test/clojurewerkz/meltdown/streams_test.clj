@@ -6,8 +6,8 @@
 (alter-var-root #'*out* (constantly *out*))
 
 (deftest basic-stream-map-test
-  (let [channel (create)
-        stream  (map* inc channel)
+  (let [ch (create)
+        stream  (map* inc ch)
         stream2 (map* #(+ 2 %) stream)
         stream3 (map* #(+ 3 %) stream2)
 
@@ -17,7 +17,7 @@
     (consume stream2 (fn [v] (swap! res assoc :second v)))
     (consume stream3 (fn [v] (swap! res assoc :third v)))
 
-    (accept channel 1)
+    (accept ch 1)
 
     (let [d @res]
       (is (= 2 (:first d)))
@@ -26,16 +26,16 @@
 
 
 (deftest basic-stream-filter-test
-  (let [channel (create)
-        even    (filter* even? channel)
-        odd     (filter* odd? channel)
+  (let [ch (create)
+        even    (filter* even? ch)
+        odd     (filter* odd? ch)
         res     (atom {})]
 
     (consume even (fn [v] (swap! res assoc :even v)))
     (consume odd (fn [v] (swap! res assoc :odd v)))
 
-    (accept channel 1)
-    (accept channel 2)
+    (accept ch 1)
+    (accept ch 2)
 
     (let [d @res]
       (is (= 1 (:odd d)))
@@ -43,38 +43,38 @@
 
 
 (deftest batch-test
-  (let [channel     (create)
-        incrementer (map* inc channel)
+  (let [ch     (create)
+        incrementer (map* inc ch)
         batcher     (batch* 3 incrementer)
         res         (atom nil)]
 
     (consume batcher (fn [i] (reset! res i)))
 
-    (accept channel 1)
+    (accept ch 1)
     (is (nil? @res))
-    (accept channel 1)
-    (accept channel 1)
+    (accept ch 1)
+    (accept ch 1)
 
     (is (= [2 2 2] @res))))
 
 
 (deftest basic-stream-reduce-test
-  (let [channel (create)
-        stream  (reduce* #(+ %1 %2) 0 channel)
+  (let [ch (create)
+        stream  (reduce* #(+ %1 %2) 0 ch)
         res     (atom nil)]
 
     (consume stream #(reset! res %))
 
-    (accept channel 1)
-    (accept channel 2)
-    (accept channel 3)
-    (ms/flush channel)
+    (accept ch 1)
+    (accept ch 2)
+    (accept ch 3)
+    (ms/flush ch)
 
     (is (= 6 @res))))
 
 (deftest custom-stream-test
-  (let [channel            (create)
-        incrementer        (map* inc channel)
+  (let [ch            (create)
+        incrementer        (map* inc ch)
         every-fifth-stream (let [counter (atom 0)]
                              (custom-stream
                               (fn [event downstream]
@@ -86,24 +86,24 @@
         res                (atom nil)
         consumer           (consume every-fifth-stream #(reset! res %))]
 
-    (accept channel 1)
+    (accept ch 1)
     (is (= nil @res))
-    (accept channel 2)
+    (accept ch 2)
     (is (= nil @res))
-    (accept channel 3)
+    (accept ch 3)
     (is (= nil @res))
-    (accept channel 4)
+    (accept ch 4)
     (is (= nil @res))
-    (accept channel 5)
+    (accept ch 5)
     (is (= 6 @res))))
 
 
 (deftest basic-identity-test
-  (let [channel (create)
-        stream  (map* identity channel)
+  (let [ch (create)
+        stream  (map* identity ch)
         res (atom nil)]
 
     (consume stream (fn [v] (reset! res v)))
-    (accept channel [1 2 3])
+    (accept ch [1 2 3])
     (let [d @res]
       (is (= [1 2 3] d)))))
