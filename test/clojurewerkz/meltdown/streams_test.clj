@@ -1,7 +1,7 @@
 (ns clojurewerkz.meltdown.streams-test
-  (:require [clojure.test :refer :all])
-  (:use clojurewerkz.meltdown.streams
-        clojure.test))
+  (:refer-clojure :exclude [flush])
+  (:require [clojure.test :refer :all]
+            [clojurewerkz.meltdown.streams :refer :all :as ms]))
 
 (alter-var-root #'*out* (constantly *out*))
 
@@ -68,6 +68,7 @@
     (accept channel 1)
     (accept channel 2)
     (accept channel 3)
+    (ms/flush channel)
 
     (is (= 6 @res))))
 
