@@ -25,6 +25,7 @@
    :id       (.getId event)})
 
 (defn ev
+  "Shortcut for creating new Reactor events with headers"
   [& {:keys [data reply-to ^IPersistentMap headers]}]
   (let [e (Event. (Event$Headers. headers) data)]
     (when reply-to
