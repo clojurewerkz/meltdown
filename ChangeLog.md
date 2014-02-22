@@ -1,5 +1,18 @@
 ## Changes between 1.0.0-beta3 and 1.0.0-beta4
 
+### Moved Functions
+
+`clojurewerkz.meltdown.streams/fn->function` and
+`clojurewerkz.meltdown.streams/fn->predicate` are removed, use
+`clojurewerkz.meltdown.fn/->function` and
+`clojurewerkz.meltdown.fn/->predicate` instead.
+
+### Streams Flushing
+
+Stream operations are now lazier in Reactor. To enforce stream
+sources to be drained, use `clojurewerkz.meltdown.streams/flush`
+which accepts a stream or deferred.
+
 ### Reactor Update
 
 Reactor is updated to `1.1.0.M1` which has multiple breaking API
