@@ -64,10 +64,10 @@
         channel (graph (create)
                        (map* inc
                              (filter* even?
-                                      (reduce* #(+ %1 %2) 0
+                                      (reduce* + 0
                                                (consume #(reset! res1 %)))))
                        (filter* even?
-                                (reduce* #(* %1 %2) 1
+                                (reduce* * 1
                                          (consume #(reset! res2 %)))))]
     (accept channel 1)
     (accept channel 2)
@@ -85,12 +85,12 @@
         detached1 (detach
                    (map* inc
                          (filter* even?
-                                  (reduce* #(* %1 %2) 1
+                                  (reduce* * 1
                                            (consume #(reset! res1 %))))))
 
         detached2 (detach
                    (filter* odd?
-                            (reduce* #(+ %1 %2) 0
+                            (reduce* + 0
                                      (consume #(reset! res2 %)))))
         summarizer #(+ %1 %2)
         channel (graph (create)
@@ -113,7 +113,7 @@
         res2 (atom nil)
         detached-filter (detach
                          (filter* even?
-                                  (reduce* #(* %1 %2) 2
+                                  (reduce* * 2
                                            (consume #(reset! res1 %)))))
         detached1 (detach
                    (map* inc
@@ -121,7 +121,7 @@
 
         detached2 (detach
                    (filter* odd?
-                            (reduce* #(+ %1 %2) 1
+                            (reduce* + 1
                                      (consume #(reset! res2 %)))))
         summarizer #(+ %1 %2)
         channel (graph (create)
@@ -141,7 +141,7 @@
 
 (deftest attached-doseq-trick-test
   (let [res (atom {})
-        summarizer #(+ %1 %2)
+        summarizer +
         channel (graph (create)
                        (dotimes [i 5]
                          (map* #(swap! res assoc i %))))]
