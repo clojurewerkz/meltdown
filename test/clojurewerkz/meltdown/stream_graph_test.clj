@@ -46,7 +46,7 @@
         channel (graph (create)
                        (map* inc
                              (filter* even?
-                                      (reduce* #(+ %1 %2) 0
+                                      (reduce* + 0
                                                (consume #(reset! res %))))))]
 
     (accept channel 1)
