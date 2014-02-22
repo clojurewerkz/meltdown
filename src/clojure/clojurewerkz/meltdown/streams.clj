@@ -67,6 +67,10 @@
         (.compose deferred))
     deferred-or-stream))
 
+(defn ^Stream flush
+  [deferred-or-stream]
+  (.flush ^Stream (maybe-compose deferred-or-stream)))
+
 (defn map*
   "Defines a map function, that will apply `f` to all events going through it."
   [^IFn f deferred-or-stream]
