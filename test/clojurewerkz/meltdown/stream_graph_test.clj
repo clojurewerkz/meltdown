@@ -5,11 +5,13 @@
 
 (alter-var-root #'*out* (constantly *out*))
 
+(def env (ms/environment))
+
 (deftest basic-stream-map-test
   (let [res (atom {})
         swapper (fn [k] #(swap! res assoc k %))
         summarizer (fn [i] #(+ i %))
-        ch (graph (create)
+        ch (graph (create :env env)
                        (map* inc
                              (consume (swapper :first))
                              (map* (summarizer 2)
@@ -26,7 +28,7 @@
 
 (deftest basic-stream-map-reduce-test
   (let [res (atom nil)
-        ch (graph (create)
+        ch (graph (create :env env)
                        (map* inc
                              (reduce* + 0
                                       (consume (fn [s]
@@ -43,7 +45,7 @@
 (deftest basic-stream-map-filter-reduce-test
   (let [res (atom nil)
         summarizer #(+ %1 %2)
-        ch (graph (create)
+        ch (graph (create :env env)
                        (map* inc
                              (filter* even?
                                       (reduce* + 0
@@ -63,7 +65,7 @@
   (let [res1 (atom nil)
         res2 (atom nil)
         summarizer #(+ %1 %2)
-        ch (graph (create)
+        ch (graph (create :env env)
                        (map* inc
                              (filter* even?
                                       (reduce* + 0
@@ -96,7 +98,7 @@
                             (reduce* + 0
                                      (consume #(reset! res2 %)))))
         summarizer #(+ %1 %2)
-        ch (graph (create)
+        ch (graph (create :env env)
                        (attach detached1)
                        (attach detached2))]
 
@@ -128,7 +130,7 @@
                             (reduce* + 1
                                      (consume #(reset! res2 %)))))
         summarizer #(+ %1 %2)
-        ch (graph (create)
+        ch (graph (create :env env)
                        (attach detached1)
                        (attach detached2))]
 
@@ -147,7 +149,7 @@
 (deftest attached-doseq-trick-test
   (let [res (atom {})
         summarizer +
-        ch (graph (create)
+        ch (graph (create :env env)
                        (dotimes [i 5]
                          (map* #(swap! res assoc i %))))]
 
@@ -163,7 +165,7 @@
 (deftest basic-map-batch-test
   (let [res (atom nil)
         swapper (fn [k] #(swap! res assoc k %))
-        ch (graph (create)
+        ch (graph (create :env env)
                        (map* inc
                              (batch* 5
                                      (consume #(reset! res %)))))]
