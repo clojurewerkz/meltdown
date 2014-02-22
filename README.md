@@ -56,7 +56,7 @@ are using Maven, add the following repository definition to your `pom.xml`:
 With Leiningen:
 
 ```clj
-[clojurewerkz/meltdown "1.0.0-beta3"]
+[clojurewerkz/meltdown "1.0.0-beta4"]
 ```
 
 With Maven:
@@ -65,7 +65,7 @@ With Maven:
 <dependency>
   <groupId>clojurewerkz</groupId>
   <artifactId>meltdown</artifactId>
-  <version>1.0.0-beta3</version>
+  <version>1.0.0-beta4</version>
 </dependency>
 ```
 
