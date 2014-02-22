@@ -67,8 +67,8 @@
     (.get spec)))
 
 (defn accept
-  [^Stream stream value]
-  (.accept stream value))
+  [^Deferred deferred value]
+  (.accept deferred value))
 
 (defn- ^Stream maybe-compose
   [deferred-or-stream]
