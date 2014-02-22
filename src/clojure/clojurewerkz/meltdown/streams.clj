@@ -19,6 +19,7 @@
            [reactor.event.dispatch Dispatcher]
            [reactor.core Environment]
            [reactor.function Function Predicate]
+           reactor.function.support.Tap
            [reactor.tuple Tuple2]
            clojure.lang.IFn)
   (:require [clojurewerkz.meltdown.consumers :as mc]))
@@ -69,6 +70,10 @@
 (defn accept
   [^Deferred deferred value]
   (.accept deferred value))
+
+(defn ^Tap tap
+  [^Stream stream]
+  (.tap stream))
 
 (defn- ^Stream maybe-compose
   [deferred-or-stream]
