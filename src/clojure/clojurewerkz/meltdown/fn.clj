@@ -15,13 +15,21 @@
 (ns clojurewerkz.meltdown.fn
   "Interfaces Clojure functions to Reactor's Function interface and
    such"
-  (:import reactor.function.Function
+  (:import [reactor.function Function Predicate]
            clojure.lang.IFn))
 
-(defn ->function
+(defn ^Function ->function
   "Reifies a Clojure function to a reactor.fn.Function
    instance Reactor can work with"
   [IFn f]
   (reify Function
     (apply [this arg]
       (f arg))))
+
+(defn ^Predicate ->predicate
+  "Instantiates a reactor consumer from a Clojure
+   function"
+  [^IFn f]
+  (proxy [Predicate] []
+    (test [a]
+      (f a))))

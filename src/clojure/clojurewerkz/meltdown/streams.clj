@@ -18,32 +18,17 @@
            [reactor.core.composable.spec DeferredStreamSpec]
            [reactor.event.dispatch Dispatcher]
            [reactor.core Environment]
-           [reactor.function Function Predicate]
            reactor.function.support.Tap
            [reactor.tuple Tuple2]
            clojure.lang.IFn)
-  (:require [clojurewerkz.meltdown.consumers :as mc]))
+  (:require [clojurewerkz.meltdown.consumers :as mc]
+            [clojurewerkz.meltdown.fn :as mfn]))
 
 (def dispatcher-types
   {:event-loop "eventLoop"
    :thread-pool "threadPoolExecutor"
    :ring-buffer "ringBuffer"})
 
-(defn ^Function fn->function
-  "Instantiates a reactor consumer from a Clojure
-   function"
-  [^IFn f]
-  (reify Function
-    (apply [this a]
-      (f a))))
-
-(defn ^Predicate fn->predicate
-  "Instantiates a reactor consumer from a Clojure
-   function"
-  [^IFn f]
-  (proxy [Predicate] []
-    (test [a]
-      (f a))))
 
 (defn environment
   []
@@ -86,14 +71,14 @@
   "Defines a map function, that will apply `f` to all events going through it."
   [^IFn f deferred-or-stream]
   (let [stream (maybe-compose deferred-or-stream)]
-    (.map stream (fn->function f))))
+    (.map stream (mfn/->function f))))
 
 (defn filter*
   "Defines a filter function, that will apply predicate `f` to all events going through it
    and will stream only those for which predicate returned truthy value."
   [^IFn f deferred-or-stream]
   (let [stream (maybe-compose deferred-or-stream)]
-    (.filter stream (fn->predicate f))))
+    (.filter stream (mfn/->predicate f))))
 
 (defn batch*
   "Defines a batch function that will accumulate values until it's reaches count of `i`, and
@@ -106,7 +91,7 @@
   "Defines an aggregator funciton that will apply previous aggregator value and new incoming event
    to function `f`, receives `default-value` with which aggregator is initialized."
   ([^IFn f default-value deferred-or-stream]
-     (.reduce (maybe-compose deferred-or-stream) (fn->function
+     (.reduce (maybe-compose deferred-or-stream) (mfn/->function
                                                    (fn [^Tuple2 tuple]
                                                      (let [value (.getT1 tuple)
                                                            acc (or (.getT2 tuple) default-value)]
