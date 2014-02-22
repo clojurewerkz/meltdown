@@ -311,6 +311,11 @@ value:
 ;; => 6
 ```
 
+### Lazy Evaluations of Streams
+
+As of `beta4`, streams drain their input sources lazily. To force evaluation
+on a stream, pass it to `clojurewerkz.meltdown.stream/flush`.
+
 ### `batch*` operation
 
 For buffered operations, for example, when you'd like to have several
