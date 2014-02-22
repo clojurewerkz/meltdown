@@ -21,8 +21,9 @@
            clojure.lang.IFn))
 
 (defn ^Consumer from-fn
-  "Instantiates a reactor consumer from a Clojure
-   function"
+  "Instantiates a transforming Reactor consumer from a Clojure
+   function. The consumer will automatically convert Reactor
+   events to Clojure maps."
   [^IFn f]
   (IFnTransformingConsumer. f ev/event->map))
 
