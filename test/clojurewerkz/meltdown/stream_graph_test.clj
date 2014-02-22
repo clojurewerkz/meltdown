@@ -26,11 +26,12 @@
 
 (deftest basic-stream-map-reduce-test
   (let [res (atom nil)
-        summarizer #(+ %1 %2)
         channel (graph (create)
                        (map* inc
-                             (reduce* #(+ %1 %2) 0
-                                      (consume #(reset! res %)))))]
+                             (reduce* + 0
+                                      (consume (fn [s]
+                                                 (println s)
+                                                 (reset! res s))))))]
 
     (accept channel 1)
     (accept channel 2)
@@ -69,12 +70,10 @@
                        (filter* even?
                                 (reduce* #(* %1 %2) 1
                                          (consume #(reset! res2 %)))))]
-
     (accept channel 1)
     (accept channel 2)
     (accept channel 3)
     (accept channel 4)
-
     (let [d1 @res1
           d2 @res2]
       (is (= 6 d1))
