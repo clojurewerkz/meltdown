@@ -21,7 +21,7 @@
 (defn ^Function ->function
   "Reifies a Clojure function to a reactor.fn.Function
    instance Reactor can work with"
-  [IFn f]
+  [^IFn f]
   (reify Function
     (apply [this arg]
       (f arg))))
