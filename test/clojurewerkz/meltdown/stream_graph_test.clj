@@ -30,7 +30,6 @@
                        (map* inc
                              (reduce* + 0
                                       (consume (fn [s]
-                                                 (println s)
                                                  (reset! res s))))))]
 
     (accept channel 1)
