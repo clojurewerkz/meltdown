@@ -5,8 +5,10 @@
 
 (alter-var-root #'*out* (constantly *out*))
 
+(def env (ms/environment))
+
 (deftest basic-stream-map-test
-  (let [ch (create)
+  (let [ch (create :env env)
         stream  (map* inc ch)
         stream2 (map* #(+ 2 %) stream)
         stream3 (map* #(+ 3 %) stream2)
@@ -26,7 +28,7 @@
 
 
 (deftest basic-stream-filter-test
-  (let [ch (create)
+  (let [ch (create :env env)
         even    (filter* even? ch)
         odd     (filter* odd? ch)
         res     (atom {})]
@@ -43,7 +45,7 @@
 
 
 (deftest batch-test
-  (let [ch     (create)
+  (let [ch     (create :env env)
         incrementer (map* inc ch)
         batcher     (batch* 3 incrementer)
         res         (atom nil)]
@@ -59,7 +61,7 @@
 
 
 (deftest basic-stream-reduce-test
-  (let [ch (create)
+  (let [ch (create :env env)
         stream  (reduce* #(+ %1 %2) 0 ch)
         res     (atom nil)]
 
@@ -73,7 +75,7 @@
     (is (= 6 @res))))
 
 (deftest custom-stream-test
-  (let [ch            (create)
+  (let [ch            (create :env env)
         incrementer        (map* inc ch)
         every-fifth-stream (let [counter (atom 0)]
                              (custom-stream
@@ -99,7 +101,7 @@
 
 
 (deftest basic-identity-test
-  (let [ch (create)
+  (let [ch (create :env env)
         stream  (map* identity ch)
         res (atom nil)]
 
