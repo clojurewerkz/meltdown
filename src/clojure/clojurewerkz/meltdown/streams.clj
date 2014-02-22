@@ -13,6 +13,7 @@
 ;; limitations under the License.
 
 (ns clojurewerkz.meltdown.streams
+  (:refer-clojure :exclude [flush])
   (:import [reactor.core.composable.spec Streams]
            [reactor.core.composable Stream Deferred]
            [reactor.core.composable.spec DeferredStreamSpec]
