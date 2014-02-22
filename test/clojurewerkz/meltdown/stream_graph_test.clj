@@ -35,6 +35,7 @@
     (accept channel 1)
     (accept channel 2)
     (accept channel 3)
+    (ms/flush channel)
 
     (let [d @res]
       (is (= 9 d)))))
@@ -52,6 +53,7 @@
     (accept channel 2)
     (accept channel 3)
     (accept channel 4)
+    (ms/flush channel)
 
     (let [d @res]
       (is (= 6 d)))))
@@ -73,6 +75,7 @@
     (accept channel 2)
     (accept channel 3)
     (accept channel 4)
+    (ms/flush channel)
     (let [d1 @res1
           d2 @res2]
       (is (= 6 d1))
@@ -101,6 +104,7 @@
     (accept channel 2)
     (accept channel 3)
     (accept channel 4)
+    (ms/flush channel)
 
     (let [d1 @res1
           d2 @res2]
@@ -132,6 +136,7 @@
     (accept channel 2)
     (accept channel 3)
     (accept channel 4)
+    (ms/flush channel)
 
     (let [d1 @res1
           d2 @res2]
