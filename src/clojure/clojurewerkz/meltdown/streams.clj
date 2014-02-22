@@ -77,14 +77,14 @@
 
 (defn map*
   "Defines a map function, that will apply `f` to all events going through it."
-  [f deferred-or-stream]
+  [^IFn f deferred-or-stream]
   (let [stream (maybe-compose deferred-or-stream)]
     (.map stream (fn->function f))))
 
 (defn filter*
   "Defines a filter function, that will apply predicate `f` to all events going through it
    and will stream only those for which predicate returned truthy value."
-  [f deferred-or-stream]
+  [^IFn f deferred-or-stream]
   (let [stream (maybe-compose deferred-or-stream)]
     (.filter stream (fn->predicate f))))
 
@@ -98,7 +98,7 @@
 (defn reduce*
   "Defines an aggregator funciton that will apply previous aggregator value and new incoming event
    to function `f`, receives `default-value` with which aggregator is initialized."
-  ([f default-value deferred-or-stream]
+  ([^IFn f default-value deferred-or-stream]
      (.reduce (maybe-compose deferred-or-stream) (fn->function
                                                    (fn [^Tuple2 tuple]
                                                      (let [value (.getT1 tuple)
@@ -109,12 +109,12 @@
 
 (defn consume
   "Defines a consumer for stream."
-  [^Stream stream f]
+  [^Stream stream ^IFn f]
   (.consume stream
             (mc/from-fn-raw f)))
 
 (defn custom-stream
-  [f deferred-or-stream]
+  [^IFn f deferred-or-stream]
   (let [downstream (create)]
     (consume (maybe-compose deferred-or-stream)
              #(f % downstream))
