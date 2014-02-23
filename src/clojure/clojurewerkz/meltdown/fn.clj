@@ -16,6 +16,7 @@
   "Interfaces Clojure functions to Reactor's Function interface and
    such"
   (:import [reactor.function Function Predicate]
+           [reactor.filter Filter]
            clojure.lang.IFn))
 
 (defn ^Function ->function
@@ -33,3 +34,10 @@
   (proxy [Predicate] []
     (test [a]
       (f a))))
+
+(defn ^Filter ->filter
+  "Instantiates Reactor filter from Clojure function"
+  [^IFn f]
+  (reify Filter
+    (filter [this items key]
+      (f items key))))
