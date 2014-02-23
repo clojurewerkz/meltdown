@@ -13,12 +13,12 @@
         swapper (fn [k] #(swap! res assoc k %))
         summarizer (fn [i] #(+ i %))
         ch (graph (create :env env)
-                       (map* inc
-                             (consume (swapper :first))
-                             (map* (summarizer 2)
-                                   (consume (swapper :second))
-                                   (map* (summarizer 3)
-                                         (consume (swapper :third))))))]
+                  (map* inc
+                        (consume (swapper :first))
+                        (map* (summarizer 2)
+                              (consume (swapper :second))
+                              (map* (summarizer 3)
+                                    (consume (swapper :third))))))]
 
     (accept ch 1)
 
@@ -30,10 +30,10 @@
 (deftest basic-stream-map-reduce-test
   (let [res (atom nil)
         ch (graph (create :env env)
-                       (map* inc
-                             (reduce* + 0
-                                      (consume (fn [s]
-                                                 (reset! res s))))))]
+                  (map* inc
+                        (reduce* + 0
+                                 (consume (fn [s]
+                                            (reset! res s))))))]
 
     (accept ch 1)
     (accept ch 2)
@@ -47,10 +47,10 @@
   (let [res (atom nil)
         summarizer #(+ %1 %2)
         ch (graph (create :env env)
-                       (map* inc
-                             (filter* even?
-                                      (reduce* + 0
-                                               (consume #(reset! res %))))))]
+                  (map* inc
+                        (filter* even?
+                                 (reduce* + 0
+                                          (consume #(reset! res %))))))]
 
     (accept ch 1)
     (accept ch 2)
@@ -67,13 +67,13 @@
         res2 (atom nil)
         summarizer #(+ %1 %2)
         ch (graph (create :env env)
-                       (map* inc
-                             (filter* even?
-                                      (reduce* + 0
-                                               (consume #(reset! res1 %)))))
-                       (filter* even?
-                                (reduce* * 1
-                                         (consume #(reset! res2 %)))))]
+                  (map* inc
+                        (filter* even?
+                                 (reduce* + 0
+                                          (consume #(reset! res1 %)))))
+                  (filter* even?
+                           (reduce* * 1
+                                    (consume #(reset! res2 %)))))]
     (accept ch 1)
     (accept ch 2)
     (accept ch 3)
@@ -100,8 +100,8 @@
                                      (consume #(reset! res2 %)))))
         summarizer #(+ %1 %2)
         ch (graph (create :env env)
-                       (attach detached1)
-                       (attach detached2))]
+                  (attach detached1)
+                  (attach detached2))]
 
     (accept ch 1)
     (accept ch 2)
@@ -132,8 +132,8 @@
                                      (consume #(reset! res2 %)))))
         summarizer #(+ %1 %2)
         ch (graph (create :env env)
-                       (attach detached1)
-                       (attach detached2))]
+                  (attach detached1)
+                  (attach detached2))]
 
     (accept ch 1)
     (accept ch 2)
@@ -151,8 +151,8 @@
   (let [res (atom {})
         summarizer +
         ch (graph (create :env env)
-                       (dotimes [i 5]
-                         (map* #(swap! res assoc i %))))]
+                  (dotimes [i 5]
+                    (map* #(swap! res assoc i %))))]
 
     (accept ch 1)
     (accept ch 2)
@@ -167,9 +167,9 @@
   (let [res (atom nil)
         swapper (fn [k] #(swap! res assoc k %))
         ch (graph (create :env env)
-                       (map* inc
-                             (batch* 5
-                                     (consume #(reset! res %)))))]
+                  (map* inc
+                        (batch* 5
+                                (consume #(reset! res %)))))]
 
     (accept ch 1)
     (accept ch 2)
