@@ -5,8 +5,8 @@ programming, event passing and stream processing toolkit for the JVM.
 
 It follows the path of
 [Romulan](https://github.com/clojurewerkz/romulan), an old
-ClojureWerkz project on top of LMAX Disruptor that's not currently
-actively being worked on.
+ClojureWerkz project on top of [LMAX Disruptor](http://lmax-exchange.github.io/disruptor/) that's
+been abandoned.
 
 
 ## Project Goals
