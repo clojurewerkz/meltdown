@@ -1,11 +1,12 @@
 (ns clojurewerkz.meltdown.stream-graph-test
   (:require [clojure.test :refer :all]
             [clojurewerkz.meltdown.streams :as ms]
-            [clojurewerkz.meltdown.stream-graph :refer :all]))
+            [clojurewerkz.meltdown.stream-graph :refer :all]
+            [clojurewerkz.meltdown.env :as me]))
 
 (alter-var-root #'*out* (constantly *out*))
 
-(def env (ms/environment))
+(def env (me/environment))
 
 (deftest basic-stream-map-test
   (let [res (atom {})

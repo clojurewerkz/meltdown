@@ -23,17 +23,14 @@
            [reactor.tuple Tuple2]
            clojure.lang.IFn)
   (:require [clojurewerkz.meltdown.consumers :as mc]
-            [clojurewerkz.meltdown.fn :as mfn]))
+            [clojurewerkz.meltdown.fn :as mfn]
+            [clojurewerkz.meltdown.env :as me]))
 
 (def dispatcher-types
   {:event-loop "eventLoop"
    :thread-pool "threadPoolExecutor"
    :ring-buffer "ringBuffer"})
 
-
-(defn environment
-  []
-  (Environment.))
 
 (defn ^Deferred create
   "Creates a stream processing channel"
@@ -43,7 +40,7 @@
                                    (Streams/defer))]
     (if env
       (.env spec env)
-      (.env spec (environment)))
+      (.env spec (me/environment)))
     (if dispatcher-type
       (.dispatcher spec ^String (dispatcher-type dispatcher-types))
       (.synchronousDispatcher spec))
