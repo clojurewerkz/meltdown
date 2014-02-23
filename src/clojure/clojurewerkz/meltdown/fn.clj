@@ -20,15 +20,14 @@
            clojure.lang.IFn))
 
 (defn ^Function ->function
-  "Reifies a Clojure function to a reactor.fn.Function
-   instance Reactor can work with"
+  "Reifies Clojure function to Reactor function"
   [^IFn f]
   (reify Function
     (apply [this arg]
       (f arg))))
 
 (defn ^Predicate ->predicate
-  "Instantiates a reactor consumer from a Clojure
+  "Instantiates Reactor consumer from Clojure
    function"
   [^IFn f]
   (proxy [Predicate] []
@@ -36,7 +35,7 @@
       (f a))))
 
 (defn ^Filter ->filter
-  "Instantiates Reactor filter from Clojure function"
+  "Reifies Clojure function to Reactor filter"
   [^IFn f]
   (reify Filter
     (filter [this items key]
