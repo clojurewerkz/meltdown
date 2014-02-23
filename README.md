@@ -1,7 +1,7 @@
 # Meltdown, a Clojure Interface to Reactor
 
 Meltdown is a Clojure interface to [Reactor](https://github.com/reactor), an asynchronous
-programming, event passing and stream processing toolkit for the JVM.
+programming, event passing and stream processing [toolkit for the JVM](http://spring.io/blog/2013/11/12/it-can-t-just-be-big-data-it-has-to-be-fast-data-reactor-1-0-goes-ga).
 
 It follows the path of
 [Romulan](https://github.com/clojurewerkz/romulan), an old
