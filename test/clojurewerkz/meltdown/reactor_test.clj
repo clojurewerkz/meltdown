@@ -31,6 +31,26 @@
         (is (= {} (:headers d)))
         (is (= "delivered" (get-in d [:data :event])))))))
 
+(deftest test-fanout-delivery
+  (with-latch 2
+    (let [r     (mr/create)
+          key   "events.silly"
+          data  {:event "delivered"}
+          res   (atom [])
+          f     (fn [event]
+                  (swap! res conj event)
+                  (.countDown latch))]
+      (mr/on r ($ key) f)
+      (mr/on r ($ key) f)
+      (mr/notify r key data)
+      (.await latch 1 TimeUnit/SECONDS)
+      (let [xs @res
+            d  (first xs)]
+        (is (= (first xs) (second xs)))
+        (is (:id d))
+        (is (= {} (:headers d)))
+        (is (= "delivered" (get-in d [:data :event])))))))
+
 (deftest test-regex-delivery
   (with-latch 3
     (let [r     (mr/create)
