@@ -1,9 +1,19 @@
 ## Changes between 1.0.0-beta4 and 1.0.0-beta5
 
+### Environment Functions
+
+`clojurewerkz.meltdown.env/environment` is a function that returns
+a shared environment. To create a completely new environment from
+scratch, use `clojurewerkz.meltdown.env/create`.
+
+`clojurewerkz.meltdown.env/shutdown` shuts down environments and
+all associated dispatchers.
+
+
 ### `clojurewerkz.meltdown.fn/->filter`
 
 `clojurewerkz.meltdown.fn/->filter` is a new function that reifies
-Reactor filters from Clojure functions
+Reactor filters from Clojure functions.
 
 
 ## Changes between 1.0.0-beta3 and 1.0.0-beta4
