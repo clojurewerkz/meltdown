@@ -54,7 +54,7 @@
   [^Registration reg]
   (.cancel reg))
 
-(defn ^boolean cancell-after-use?
+(defn ^boolean cancel-after-use?
   [^Registration reg]
   (.isCancelAfterUse reg))
 
