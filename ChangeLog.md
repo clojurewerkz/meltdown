@@ -1,3 +1,11 @@
+## Changes between 1.0.0-beta4 and 1.0.0-beta5
+
+### `clojurewerkz.meltdown.fn/->filter`
+
+`clojurewerkz.meltdown.fn/->filter` is a new function that reifies
+Reactor filters from Clojure functions
+
+
 ## Changes between 1.0.0-beta3 and 1.0.0-beta4
 
 ### Moved Functions
