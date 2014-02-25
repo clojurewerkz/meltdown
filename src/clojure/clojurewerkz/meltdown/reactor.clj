@@ -20,7 +20,8 @@
     * Event notifications"
   (:require [clojurewerkz.meltdown.consumers :as mc]
             [clojurewerkz.meltdown.events :as ev]
-            [clojurewerkz.meltdown.selectors :as msel])
+            [clojurewerkz.meltdown.selectors :as msel]
+            [clojurewerkz.meltdown.env :as me])
   (:import [reactor.event.routing EventRouter ConsumerFilteringEventRouter
             ArgumentConvertingConsumerInvoker]
            [reactor.event.selector Selector Selectors]
@@ -34,10 +35,6 @@
            java.lang.Throwable
            [reactor.core Reactor]
            [reactor.core.spec Reactors]))
-
-(defn environment
-  []
-  (Environment.))
 
 (def dispatcher-types
   {:event-loop "eventLoop"
@@ -111,7 +108,7 @@
   (let [spec (Reactors/reactor)]
     (if env
       (.env spec env)
-      (.env spec (environment)))
+      (.env spec (me/environment)))
     (if dispatcher
       (.dispatcher spec dispatcher)
       (if dispatcher-type
