@@ -229,19 +229,27 @@ going through it to be filtered or changed. It's very easy to build
 large processing graphs using this concept, since every mutation returns
 another `stream` you can attach consumers to.
 
-In order to compose streams, you can use `map*`, `filter*`, `reduce*`
+In order to compose streams, you can use `clojurewerkz.meltdown.streams/map*`, `filter*`, `reduce*`
 and `batch*` functions. They have signatures similar to the ones you're
 used to have in clojure. Applying `map*` with `inc` function on the
 channel will create a new `stream` that contains all the values
 incremented by one.
 
-### `map*` operation
+#### Stream Flushing
+
+Stream processing in Reactor is (mostly) lazy. To begin feeding a channel
+the values, you need to flush it with `clojurewerkz.meltdown.streams/flush`
+first.
+
+#### `map*` operation
 
 For example, let's create a channel where we push integers, and two
 streams with attached consumers that would calculate incremented and
 decremented values for incoming ints:
 
 ```clj
+(require '[clojurewerkz.meltdown.streams :as ms :refer [create consume accept map*]])
+
 (let [channel (create)
       incremented-values (map* inc channel)
       decremented-values (map* dec channel)]
@@ -249,7 +257,8 @@ decremented values for incoming ints:
   (consume decremented-values (fn [i] (println "Decremented value: " i)))
   (accept channel 1)
   (accept channel 2)
-  (accept channel 3))
+  (accept channel 3)
+  (ms/flush channel))
 ;; => Incremented value:  2
 ;; => Decremented value:  0
 ;; => Incremented value:  3
@@ -262,22 +271,27 @@ You can also apply `map*` to streams that were already "mapped", reduced
 filtered or batched:
 
 ```clj
+(require '[clojurewerkz.meltdown.streams :as ms :refer [create consume accept map*]])
+
 (let [channel (create)
       incremented-values (map* inc channel)
       squared-values (map* (fn [i] (* i i)) incremented-values)]
   (consume squared-values (fn [i] (println "Incremented and squared value: " i)))
   (accept channel 1)
-  (accept channel 2))
+  (accept channel 2)
+  (ms/flush channel))
 ;; => Incremented and squared value:  4
 ;; => Incremented and squared value:  9
 ```
 
-### `filter*` operation
+#### `filter*` operation
 
 `filter*` would filter values that go through it and only pass ones for
 which predicate matches further:
 
 ```clj
+(require '[clojurewerkz.meltdown.streams :as ms :refer [create consume accept filter*]])
+
 (let [channel (create)
       even-values (filter* even? channel)
       odd-values  (filter* odd? channel)]
@@ -286,20 +300,23 @@ which predicate matches further:
   (accept channel 1)
   (accept channel 2)
   (accept channel 3)
-  (accept channel 4))
+  (accept channel 4)
+  (ms/flush channel))
 ;; => Got an odd value:  1
 ;; => Got an even value:  2
 ;; => Got an odd value:  3
 ;; => Got an even value:  4
 ```
 
-### `reduce*` operation
+#### `reduce*` operation
 
 `reduce*` works pretty much same way as `reduce` in clojure works,
 except for it gets values from the stream and holds last accumulator
 value:
 
 ```clj
+(require '[clojurewerkz.meltdown.streams :as ms :refer [create consume accept reduce*]])
+
 (let [channel (create)
       res (atom nil)
       sum (reduce* #(+ %1 %2) 0 channel)]
@@ -307,23 +324,19 @@ value:
   (accept channel 1)
   (accept channel 2)
   (accept channel 3)
-        @res)
+  (ms/flush channel)
+  @res)
 ;; => 6
 ```
 
-### Lazy Evaluations of Streams
-
-As of `beta4`, streams drain their input sources lazily. To force evaluation
-on a stream, pass it to `clojurewerkz.meltdown.stream/flush`.
-
-### `batch*` operation
+#### `batch*` operation
 
 For buffered operations, for example, when you'd like to have several
 values batched together, and only bundled values are of interest for
 you, you can use `batch*` that only emits values when buffer capacity is
 reached and buffer is flushed.
 
-### Custom streams
+#### Custom streams
 
 If these four given operations are not enough for you and you'd like to
 create a custom stream, it's quite easy as welll. For that, there's a
@@ -396,7 +409,7 @@ instead of usual `streams` one.
 ;; => 9
 ```
 
-### Attaching and detaching graph parts
+#### Attaching and detaching graph parts
 
 If you see that your graph is too deeply nested, and you'd like to split it
 in parts, you can use `attach` and `detach` functions. For example, here's
