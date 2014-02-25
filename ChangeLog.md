@@ -1,5 +1,17 @@
 ## Changes between 1.0.0-beta4 and 1.0.0-beta5
 
+### Environment Reuse
+
+Previously Meltdown instantiated a new `Environment` per
+`clojurewerkz.meltdown.reactor/create` invocation without
+a provided environment. This lead to excessive thread creation
+which could eventually exhaust system resources.
+
+Meltdown `1.0.0-beta5` will reuse the same environment for
+all created reactors unless its asked to use a specific
+`Environment` instance.
+
+
 ### Environment Functions
 
 `clojurewerkz.meltdown.env/environment` is a function that returns
