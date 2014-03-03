@@ -119,11 +119,16 @@ In order to push events into reactor, use `clojurewerkz.meltdown.reactor/notify`
 
 ### Selectors
 
-There're two types of selectors supported: exact match and regular
-expression. Exact match should be used for cases when you want handler
-to respond to a single key:
+Selectors determine which consumers will be invoked for an event.
+
+There are multiple types of selectors supporte by Reactor. Meltdown
+primarily focuses on two types: exact match and regular
+expressions. The exact match should be used for cases when you want
+handler to respond to a single key:
 
 ```clj
+(require '[clojurewerkz.meltdown.reactor :as mr :refer [$]])
+
 (mr/on reactor ($ "key") (fn [event] (do-one-thing event)))
 (mr/on reactor ($ "key") (fn [event] (do-other-thing event)))
 (mr/on reactor ($ "key") (fn [event] (do-something-else event)))
@@ -132,10 +137,10 @@ to respond to a single key:
 (mr/notify reactor "other" {:other :payload}) ;; will fire none
 ```
 
-That means that all three handlers will receive a payload.
+In the example above all three handlers will receive the event.
 
 Regular expression selectors are used whenever you want to match one or
-many event keys based on some pattern, for example:
+many event keys based on a pattern, for example:
 
 ```clj
 (mr/on reactor (R "USA.*") (fn [event] (usa-handler event)))
