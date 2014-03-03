@@ -110,6 +110,10 @@ handler.
 In order to push events into reactor, use `clojurewerkz.meltdown.reactor/notify`:
 
 ```clj
+(require '[clojurewerkz.meltdown.reactor :as mr])
+
+;; you can pass any data structures/objects over
+;; reactors
 (mr/notify reactor "key" {:my "payload"})
 ```
 
