@@ -87,7 +87,7 @@ using `clojurewerkz.meltdown.reactor/create`:
 
 ```clj
 (ns my-ns
-  (:require [clojurewerkz.meltdown.reactor :as mr])
+  (:require [clojurewerkz.meltdown.reactor :as mr]))
 
 (def reactor (mr/create))
 ```
