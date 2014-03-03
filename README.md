@@ -16,6 +16,9 @@ been abandoned.
  * Be well documented
  * Be well tested
 
+In addition to providing a core Reactor API for Clojure, Meltdown provides a DSL
+for stream processing.
+
 
 ## Community
 
