@@ -82,7 +82,7 @@ together. Handlers can be attached to and detached from a reactor
 dynamically. When handler is attached to reactor, selector is
 used. Selectors is a way for reactor to know when to call a handler.
 
-First thing you need to get started is to define a reactor:
+To start using Meltdown, first define a reactor:
 
 ```clj
 (ns my-ns
@@ -92,7 +92,8 @@ First thing you need to get started is to define a reactor:
 (def reactor (mr/create))
 ```
 
-You can subscribe to events triggered within reactor by using `on`:
+You can subscribe to events triggered within reactor by using
+`clojurewerkz.meltdown.reactor/on`:
 
 ```clj
 (mr/on reactor ($ "key") (fn [event]
