@@ -20,19 +20,6 @@ In addition to providing a core Reactor API for Clojure, Meltdown provides a DSL
 for stream processing.
 
 
-## Community
-
-Meltdown uses
-[Reactor mailing list](https://groups.google.com/group/reactor-framework/). Feel
-free to join it and ask any questions you may have.
-
-
-To subscribe for announcements of releases, important changes and so on,
-please follow [@ClojureWerkz](https://twitter.com/#!/clojurewerkz) on
-Twitter.
-
-
-
 ## Project Maturity
 
 Meltdown is **young**, although the API hasn't changed
@@ -71,6 +58,18 @@ With Maven:
   <version>1.0.0-beta5</version>
 </dependency>
 ```
+
+## Community
+
+Meltdown uses
+[Reactor mailing list](https://groups.google.com/group/reactor-framework/). Feel
+free to join it and ask any questions you may have.
+
+
+To subscribe for announcements of releases, important changes and so on,
+please follow [@ClojureWerkz](https://twitter.com/#!/clojurewerkz) on
+Twitter.
+
 
 ## Documentation
 
