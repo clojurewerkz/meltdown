@@ -102,11 +102,11 @@ You can subscribe to events triggered within reactor by using
                              ))
 ```
 
-`($ "key")` here is a selector. In essence, that means that every time
-reactor receives event dispatched with key `"key"`, it will call your
+`($ "key")` here is a **selector**. In essence, that means that every time
+reactor receives event dispatched with the key `"key"`, it will call your
 handler.
 
-In order to push events into reactor, you can use `notify`:
+In order to push events into reactor, use `clojurewerkz.meltdown.reactor/notify`:
 
 ```clj
 (mr/notify reactor "key" {:my "payload"})
