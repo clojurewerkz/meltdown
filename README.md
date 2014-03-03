@@ -75,8 +75,10 @@ Twitter.
 
 ### Basic concepts
 
-`Reactor` is a message passing library, that's used to tie events and
-handlers together. Handlers can be attached to and detached from reactor
+`Reactor` is an event-driven programming toolkit for the JVM which
+offers multiple features. At its core, however, it is a message
+passing library, that's used to tie event publishers and consumers
+together. Handlers can be attached to and detached from a reactor
 dynamically. When handler is attached to reactor, selector is
 used. Selectors is a way for reactor to know when to call a handler.
 
