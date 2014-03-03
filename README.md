@@ -121,7 +121,7 @@ In order to push events into reactor, use `clojurewerkz.meltdown.reactor/notify`
 
 There're two types of selectors supported: exact match and regular
 expression. Exact match should be used for cases when you want handler
-to respond to the single key:
+to respond to a single key:
 
 ```clj
 (mr/on reactor ($ "key") (fn [event] (do-one-thing event)))
