@@ -86,10 +86,10 @@ To start using Meltdown, first define a reactor
 using `clojurewerkz.meltdown.reactor/create`:
 
 ```clj
-(ns my-ns
-  (:require [clojurewerkz.meltdown.reactor :as mr]))
+(require '[clojurewerkz.meltdown.reactor :as mr])
 
-(def reactor (mr/create))
+(let [reactor (mr/create)]
+  )
 ```
 
 You can subscribe to events triggered within reactor by using
