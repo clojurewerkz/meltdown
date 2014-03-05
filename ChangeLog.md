@@ -1,6 +1,8 @@
 ## Changes between 1.0.0-beta5 and 1.0.0-beta6
 
-No changes yet.
+### Reactor Update
+
+Reactor is updated to `1.1.0.M2`.
 
 
 ## Changes between 1.0.0-beta4 and 1.0.0-beta5
