@@ -1,3 +1,29 @@
+## Changes between 1.0.0-beta6 and 1.0.0-beta7
+
+### Match-All Selector
+
+`clojurewerkz.meltdown.selectors/predicate` is a new function
+that creates a match-all selector (a predicate selector
+that unconditionally returns `true`).
+
+
+### Predicate Selectors
+
+`clojurewerkz.meltdown.selectors/predicate` is a new function
+that creates a predicate selector:
+
+``` clojure
+(require '[clojurewerkz.meltdown.reactor   :as mr])
+(require '[clojurewerkz.meltdown.selectors :as ms])
+
+(let [r   (mr/create)
+      ;; will filter out events with keys that are
+      ;; odd numbers
+      sel (ms/predicate even?)]
+)
+```
+
+
 ## Changes between 1.0.0-beta5 and 1.0.0-beta6
 
 ### Reactor Update
