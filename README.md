@@ -100,8 +100,7 @@ You can subscribe to events triggered within reactor by using
           [clojurewerkz.meltdown.selectors :refer [$]])
 
 (mr/on reactor ($ "key") (fn [event]
-                           # do work
-                             ))
+                           (comment "Do something here")))
 ```
 
 `($ "key")` here is a **selector**. In essence, that means that every time
