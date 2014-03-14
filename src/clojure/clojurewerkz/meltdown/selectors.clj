@@ -35,7 +35,7 @@
   (Selectors/T c))
 
 (defn ^Selector predicate
-  "Create a selector based on a predicate"
+  "Creates a selector based on a predicate"
   [f]
   (Selectors/predicate (->predicate f)))
 
