@@ -38,3 +38,8 @@
   "Create a selector based on a predicate"
   [f]
   (Selectors/predicate (->predicate f)))
+
+(defn ^Selector match-all
+  "Creates a selector that matches every object"
+  []
+  (predicate (constantly true)))
