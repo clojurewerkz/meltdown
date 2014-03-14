@@ -121,7 +121,7 @@ In order to push events into reactor, use `clojurewerkz.meltdown.reactor/notify`
 
 Selectors determine which consumers will be invoked for an event.
 
-There are multiple types of selectors supporte by Reactor. Meltdown
+There are multiple types of selectors supported by Reactor. Meltdown
 primarily focuses on two types: exact match and regular
 expressions. The exact match should be used for cases when you want
 handler to respond to a single key:
@@ -190,17 +190,17 @@ There are several types of dispatchers, providing you a toolkit for both
 threadpool-style long-running execution to high-throughput task
 dispatching.
 
-  * default one, syncronous dispatcher, implementation that dispatches
+  * default one, synchronous dispatcher, implementation that dispatches
     events using the calling thread.
   * `:event-loop` dispatcher implementation that dispatches events using
-    the single dedicated thread. Together with default syncronous dispatcher,
+    the single dedicated thread. Together with default synchronous dispatcher,
     very useful in development mode.
   * `:thread-pool` dispatcher implementation that uses
     `ThreadPoolExecution` with an unbounded queue to dispatch
     events. Works best for long-running tasks.
   * `:ring-buffer` dispatcher implementation that uses LMAX Disruptor
     RingBuffer to queue tasks to execute. Known to be most
-    high-througput implementation.
+    high-throughput implementation.
 
 
 In order to create a reactor backed by the dispatched of your
@@ -355,10 +355,10 @@ reached and buffer is flushed.
 #### Custom streams
 
 If these four given operations are not enough for you and you'd like to
-create a custom stream, it's quite easy as welll. For that, there's a
+create a custom stream, it's quite easy as well. For that, there's a
 `custom-stream` operation available. For example, you'd like to create
 a stream that will only dispatch every 5th value further. For state,
-you can use let-over-lamda:
+you can use let-over-lambda:
 
 ```clj
 (defn every-fifth-stream
@@ -479,14 +479,14 @@ Most generic case would be:
 
 So whenever __any__ `Exception` (of any type) occurs inside your
 processing pipeline, your handler will be executed. You can also use
-subclasses:
+sub-classes:
 
 ```clj
 (mr/on-error r RuntimeException (fn [event]
                                   (println event)))
 ```
 
-In this case your handler will be only triggered when type of an occured
+In this case your handler will be only triggered when type of an occurred
 exception is `RuntimeException` or one of the derived classes.
 
 You can have more than one handler per `Exception` type.
@@ -559,4 +559,3 @@ the [Apache Public License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/clojurewerkz/meltdown/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
