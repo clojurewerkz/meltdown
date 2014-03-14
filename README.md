@@ -96,7 +96,8 @@ You can subscribe to events triggered within reactor by using
 `clojurewerkz.meltdown.reactor/on`:
 
 ```clj
-(require '[clojurewerkz.meltdown.reactor :as mr :refer [$]])
+(require '[clojurewerkz.meltdown.reactor :as mr]
+          [clojurewerkz.meltdown.selectors :refer [$]])
 
 (mr/on reactor ($ "key") (fn [event]
                            # do work
