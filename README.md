@@ -121,7 +121,7 @@ In order to push events into reactor, use `clojurewerkz.meltdown.reactor/notify`
 
 Selectors determine which consumers will be invoked for an event.
 
-There are multiple types of selectors supporte by Reactor. Meltdown
+There are multiple types of selectors supported by Reactor. Meltdown
 primarily focuses on two types: exact match and regular
 expressions. The exact match should be used for cases when you want
 handler to respond to a single key:
