@@ -13,6 +13,7 @@
 ;; limitations under the License.
 
 (ns clojurewerkz.meltdown.selectors
+  (:require [clojurewerkz.meltdown.fn :refer [->predicate]])
   (:import [reactor.event.selector Selector Selectors]
            reactor.function.Fn))
 
@@ -28,7 +29,12 @@
   (Selectors/R regex))
 
 (defn ^Selector T
-  "Creates a `Selector` based on the given class type that matches
+  "Creates a selector based on the given class type that matches
    objects whose type is assignable according to `Class.isAssignableFrom(Class)`"
   [c]
   (Selectors/T c))
+
+(defn ^Selector predicate
+  "Create a selector based on a predicate"
+  [f]
+  (Selectors/predicate (->predicate f)))
