@@ -27,7 +27,6 @@ public class IFnConsumer<T> implements Consumer<T> {
 
   @Override
   public void accept(T value) {
-		fn.invoke(value);
+    fn.invoke(value);
   }
-
 }
