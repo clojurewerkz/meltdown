@@ -27,6 +27,7 @@
       (mr/notify r key data)
       (.await latch 1 TimeUnit/SECONDS)
       (let [d @res]
+        (is (= key (:key d)))
         (is (:id d))
         (is (= {} (:headers d)))
         (is (= "delivered" (get-in d [:data :event])))))))

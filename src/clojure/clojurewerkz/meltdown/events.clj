@@ -22,6 +22,7 @@
   {:data     (.getData event)
    :reply-to (.getReplyTo event)
    :headers  (into {} (.getHeaders event))
+   :key      (.getKey event)
    :id       (.getId event)})
 
 (defn ev
