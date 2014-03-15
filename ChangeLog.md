@@ -1,3 +1,16 @@
+## Changes between 1.0.0-beta7 and 1.0.0-beta8
+
+### Key in Event Payload
+
+Meltdown now includes event key when transforming them into Clojure maps.
+
+Example event map:
+
+``` clojure
+{:data {:event delivered}, :reply-to nil, :headers {}, :key events.dummy, :id #uuid "5714bb01-ac7e-11e3-64b3-6b2c231ad83a"}
+```
+
+
 ## Changes between 1.0.0-beta6 and 1.0.0-beta7
 
 ### Match-All Selector
