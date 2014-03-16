@@ -221,14 +221,13 @@ public interface Selector  {
 Whenever you have more than a single handler registered for a selector, you
 can define a routing strategy:
 
- * `:first` routing strategy will take a first handler for which
-   selector matches key
+ * `:first` routing strategy will take a first handler whose selector matches
+   the key
  * `:broadcast` will dispatch event to every handler whose selector
-   matches key
- * `:round-robin` on each run, will dispatch event to least recently
-   used handler for which selector matches key. For example, if there're
-   three handlers, first event will get to first, second - to second,
-   third - to third, fourth - to first again and so on.
+   matches the key
+ * `:round-robin` will pick handlers on the round robin basis. For example, if there're
+   three handlers, first event will get to first, second to second,
+   third to third, fourth to first again, and so on.
 
 You can chose a routing strategy that makes most sense for your
 application. `:first` is usually used when there should be a guarantee
