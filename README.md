@@ -218,7 +218,7 @@ public interface Selector  {
 
 ### Routing Strategies
 
-Whenever you have more than a single handler attached for selector, you
+Whenever you have more than a single handler registered for a selector, you
 can define a routing strategy:
 
  * `:first` routing strategy will take a first handler for which
