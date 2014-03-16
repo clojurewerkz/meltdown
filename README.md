@@ -80,7 +80,7 @@ offers multiple features. At its core, however, it is a message
 passing library, that's used to tie event publishers and consumers
 together. Handlers can be attached to and detached from a reactor
 dynamically. When handler is attached to reactor, selector is
-used. Selectors is a way for reactor to know when to call a handler.
+used. Selectors determine what handlers will be invoked.
 
 To start using Meltdown, first define a reactor
 using `clojurewerkz.meltdown.reactor/create`:
@@ -123,7 +123,11 @@ Selectors determine which consumers will be invoked for an event.
 
 There are multiple types of selectors supported by Reactor. Meltdown
 primarily focuses on two types: exact match and regular
-expressions. The exact match should be used for cases when you want
+expressions. 
+
+#### Exact Match Selector
+
+The exact match should be used for cases when you want
 handler to respond to a single key:
 
 ```clj
@@ -139,10 +143,14 @@ handler to respond to a single key:
 
 In the example above all three handlers will receive the event.
 
+#### Regular Expression Selector
+
 Regular expression selectors are used whenever you want to match one or
 many event keys based on a pattern, for example:
 
 ```clj
+(require '[clojurewerkz.meltdown.reactor :as mr :refer [R]])
+
 (mr/on reactor (R "USA.*") (fn [event] (usa-handler event)))
 (mr/on reactor (R "Europe.*") (fn [event] (europe-handler event)))
 (mr/on reactor (R "Europe.Sw*") (fn [event] (sw-handler event)))
@@ -153,6 +161,18 @@ many event keys based on a pattern, for example:
 (mr/notify reactor "Europe.Switzerland" {:das :payload}) ;; will Europe.Sw* and Europe.* handlers
 (mr/notify reactor "Asia.China" {:teh :payload}) ;; will fire none
 ```
+
+#### Match All Selector
+
+Match all selector unconditionally matches all keys:
+
+```clj
+(require '[clojurewerkz.meltdown.reactor :as mr :refer [match-all]])
+
+;; will match all keys
+(mr/on reactor (match-all) (fn) [event] ...)
+```
+
 
 ### Routing Strategies
 
