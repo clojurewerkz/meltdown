@@ -173,6 +173,48 @@ Match all selector unconditionally matches all keys:
 (mr/on reactor (match-all) (fn) [event] ...)
 ```
 
+#### Custom Selectors
+
+To produce a custom selector, reify `reactor.event.selector.Selector`
+which looks like this:
+
+``` java
+package reactor.event.selector;
+
+/**
+ * A {@literal Selector} is a wrapper around an arbitrary object.
+ *
+ * @author Jon Brisbin
+ * @author Stephane Maldini
+ * @author Andy Wilkinson
+ */
+public interface Selector  {
+	/**
+	 * Get the object being used for comparisons and equals checks.
+	 *
+	 * @return The internal object.
+	 */
+	Object getObject();
+
+	/**
+	 * Indicates whether this Selector matches the {@code key}.
+	 *
+	 * @param key The key to match
+	 *
+	 * @return {@code true} if there's a match, otherwise {@code false}.
+	 */
+	boolean matches(Object key);
+
+	/**
+	 * Return a component that can resolve headers from a key
+	 *
+	 * @return A {@link HeaderResolver} applicable to this {@link Selector} type.
+	 */
+	HeaderResolver getHeaderResolver();
+
+}
+```
+
 
 ### Routing Strategies
 
