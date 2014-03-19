@@ -16,7 +16,8 @@
   "Operations on consumers and registrations"
   (:require [clojurewerkz.meltdown.events :as ev])
   (:import [reactor.function Consumer]
-           [reactor.event.registry Registration]
+           reactor.core.Reactor
+           [reactor.event.registry Registration Registry]
            [clojurewerkz.meltdown IFnConsumer IFnTransformingConsumer]
            clojure.lang.IFn))
 
@@ -61,3 +62,17 @@
 (defn ^Registration cancel-after-use
   [^Registration reg]
   (.cancelAfterUse reg))
+
+(defn ^Registry consumer-registry-of
+  [^Reactor r]
+  (.getConsumerRegistry r))
+
+(defn consumers-on
+  [^Reactor r]
+  (let [^Registry xs (consumer-registry-of r)]
+    (remove nil? (into [] xs))))
+
+(defn ^long consumer-count
+  [^Reactor r]
+  (let [^Registry xs (consumer-registry-of r)]
+    (count (remove nil? (into [] xs)))))
