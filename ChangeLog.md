@@ -1,6 +1,6 @@
 ## Changes between 1.0.0-beta8 and 1.0.0-beta9
 
-### Consumers and Selectors Introspection
+### Consumer and Selector Introspection
 
 `clojurewerkz.meltdown.selectors/selectors-on` is a new function that
 returns a list of selectors registered on a reactor:
