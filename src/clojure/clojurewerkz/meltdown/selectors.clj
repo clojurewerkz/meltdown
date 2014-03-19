@@ -15,7 +15,9 @@
 (ns clojurewerkz.meltdown.selectors
   (:require [clojurewerkz.meltdown.fn :refer [->predicate]])
   (:import [reactor.event.selector Selector Selectors]
-           reactor.function.Fn))
+           reactor.function.Fn
+           reactor.core.Reactor
+           [reactor.event.registry Registration Registry]))
 
 (defn ^Selector $
   ([^String sel]
@@ -43,3 +45,11 @@
   "Creates a selector that matches every object"
   []
   (predicate (constantly true)))
+
+(defn selectors-on
+  [^Reactor r]
+  ;; duplicated to not introduce dependencies between
+  ;; selectors and consumers namespaces. MK.
+  (let [^Registry reg (.getConsumerRegistry r)
+        consumers     (remove nil? (into [] reg))]
+    (map (fn [^Registration reg] (.getSelector reg)) consumers)))
