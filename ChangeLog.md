@@ -1,3 +1,33 @@
+## Changes between 1.0.0-beta8 and 1.0.0-beta9
+
+### Consumers and Selectors Introspection
+
+`clojurewerkz.meltdown.selectors/selectors-on` is a new function that
+returns a list of selectors registered on a reactor:
+
+``` clojure
+(require '[clojurewerkz.meltdown.reactor   :as mr])
+(require '[clojurewerkz.meltdown.selectors :as ms :refer [$])
+
+(let [r   (mr/create)]
+  (mr/on r ($ "a.key) (fn [evt]))
+  (ms/selectors-on r))
+```
+
+`clojurewerkz.meltdown.consumers/consumer-count` is a new function that
+returns a number of consumers registered on a reactor:
+
+``` clojure
+(require '[clojurewerkz.meltdown.reactor   :as mr])
+(require '[clojurewerkz.meltdown.selectors :refer [$])
+(require '[clojurewerkz.meltdown.consumers :as mc])
+
+(let [r   (mr/create)]
+  (mr/on r ($ "a.key) (fn [evt]))
+  (mc/consumer-count r))
+```
+
+
 ## Changes between 1.0.0-beta7 and 1.0.0-beta8
 
 ### Key in Event Payload
