@@ -50,10 +50,8 @@
 
 (defn on
   "Registers a Clojure function as event handler for a particular kind of events."
-  ([^Reactor reactor ^Selector selector ^IFn f]
-     (.on reactor selector (mc/from-fn f)))
-  ([^Reactor reactor ^IFn f]
-     (.on reactor (mc/from-fn f))))
+  [^Reactor reactor ^Selector selector ^IFn f]
+  (.on reactor selector (mc/from-fn f)))
 
 (defn on-error
   "Registers a Clojure function as event handler for a class of Exception."

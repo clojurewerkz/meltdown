@@ -94,22 +94,6 @@
         (is (= {} (:headers d)))
         (is (= "response" (get-in d [:data])))))))
 
-(deftest test-basic-delivery-default-key
-  (with-latch 1
-    (let [r     (mr/create)
-          data  {:event "delivered"}
-          res   (atom nil)]
-      (mr/on r (fn [event]
-                 (reset! res event)
-                 (.countDown latch)))
-      (mr/notify r data)
-      (.await latch 1 TimeUnit/SECONDS)
-      (let [d @res]
-        (is (:id d))
-        (is (= {} (:headers d)))
-        (is (= "delivered" (get-in d [:data :event])))))))
-
-
 (deftest routing-strategies
   (testing "First routing strategy"
     (with-latch 1
