@@ -1,5 +1,18 @@
 ## Changes between 1.0.0-beta9 and 1.0.0-beta10
 
+### Reactor Update
+
+Reactor is updated to `1.1.0.M3`.
+
+
+### 2-arity of clojurewerkz.meltdown.reactor/on is Removed
+
+Reactor `1.1.0.M3` no longer supports default key (selector),
+so 2-arity of `clojurewerkz.meltdown.reactor/on` was removed.
+
+
+## Changes between 1.0.0-beta9 and 1.0.0-beta10
+
 ### Clojure 1.6
 
 Meltdown now depends on `org.clojure/clojure` version `1.6.0`. It is
