@@ -46,6 +46,12 @@
   []
   (predicate (constantly true)))
 
+(defn ^Selector set-membership
+  "Creates a selector that matches members of the provided set"
+  [s]
+  (predicate (fn [key]
+               (contains? s key))))
+
 (defn selectors-on
   [^Reactor r]
   ;; duplicated to not introduce dependencies between

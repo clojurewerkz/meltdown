@@ -32,3 +32,19 @@
     (.await latch 1 TimeUnit/SECONDS)
     (is (= (vec (sort @xs))
            (vec rng)))))
+
+(deftest test-set-membership-selector
+  (let [r     (mr/create)
+        latch (CountDownLatch. 5)
+        xs    (atom [])
+        s     #{1 2 3 4 55}
+        sel   (ms/set-membership s)
+        rng   (range 0 200)]
+    (mr/on r sel (fn [evt]
+                   (swap! xs conj (:data evt))
+                   (.countDown latch)))
+    (doseq [i rng]
+      (mr/notify r i i))
+    (.await latch 1 TimeUnit/SECONDS)
+    (is (= (set @xs)
+           s))))
