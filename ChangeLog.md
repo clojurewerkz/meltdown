@@ -1,3 +1,19 @@
+## Changes between 1.0.0-beta10 and 1.0.0-beta11
+
+### Set Membereship Selector
+
+`clojurewerkz.meltdown.selectors/set-membership` is a new selector
+that matches on element membership in a set:
+
+``` clojure
+(require '[clojurewerkz.meltdown.reactor   :as mr])
+(require '[clojurewerkz.meltdown.selectors :as ms)
+
+(let [r   (mr/create)]
+  (mr/on r (ms/set-membership #{"white" "red" "blue"} (fn [evt])))
+```
+
+
 ## Changes between 1.0.0-beta9 and 1.0.0-beta10
 
 ### Reactor Update
