@@ -1,7 +1,7 @@
 (defproject clojurewerkz/meltdown "1.0.0-beta12-SNAPSHOT"
   :description "Clojure interface to Reactor, an event-driven programming toolkit for the JVM"
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.projectreactor/reactor-core "1.1.0.M3"]]
+                 [org.projectreactor/reactor-core "1.1.0.RC1"]]
   :profiles {:1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
              :1.5 {:dependencies [[org.clojure/clojure "1.5.1"]]}
              :master {:dependencies [[org.clojure/clojure "1.7.0-master-SNAPSHOT"]]}
