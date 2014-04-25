@@ -49,8 +49,7 @@
 (defn ^Selector set-membership
   "Creates a selector that matches members of the provided set"
   [s]
-  (predicate (fn [key]
-               (contains? s key))))
+  (Selectors/setMembership s))
 
 (defn selectors-on
   [^Reactor r]
