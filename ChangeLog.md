@@ -1,3 +1,10 @@
+## Changes between 1.0.0-beta11 and 1.0.0-beta12
+
+### Reactor Update
+
+Reactor is updated to `1.1.0.RC1`.
+
+
 ## Changes between 1.0.0-beta10 and 1.0.0-beta11
 
 ### Set Membereship Selector
