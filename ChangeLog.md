@@ -2,7 +2,7 @@
 
 ### Reactor Update
 
-Reactor is updated to `1.1.1.RELEASE`.
+Reactor is updated to `1.1.x`.
 
 
 
