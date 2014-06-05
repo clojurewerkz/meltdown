@@ -7,7 +7,7 @@
              :master {:dependencies [[org.clojure/clojure "1.7.0-master-SNAPSHOT"]]}
              :dev {:resource-paths ["test/resources"]
                    :dependencies   [[com.lmax/disruptor "3.2.1"]]
-                   :plugins [[codox "0.8.8"]]
+                   :plugins [[codox "0.8.9"]]
                    :codox {:sources ["src/clojure"]
                            :output-dir "doc/api"}}}
   :aliases {"all" ["with-profile" "dev:dev,1.4:dev,1.5:dev,master"]}
