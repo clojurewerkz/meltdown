@@ -12,7 +12,7 @@
          ;; intentionally unhygienic, expected by @body
          ~'latch latch#]
      ~@body
-     (.await latch# 1 TimeUnit/SECONDS)
+     (is (.await latch# 2 TimeUnit/SECONDS))
      (is (= 0 (.getCount latch#)))))
 
 (deftest test-basic-delivery
@@ -132,7 +132,7 @@
         (mr/notify r "key" {})
         (mr/notify r "key" {})
 
-        (.await latch 1 TimeUnit/SECONDS)))))
+        (.await latch 2 TimeUnit/SECONDS)))))
 
 (deftest test-responds-to
   (let [r     (mr/create)]
