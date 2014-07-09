@@ -108,29 +108,29 @@
         (.await latch 1 TimeUnit/SECONDS))))
 
   (testing "Broadcast routing strategy"
-    (with-latch 6
-      (let [r       (mr/create :event-routing-strategy :broadcast)
-            res     (atom nil)
-            handler (fn [event] (.countDown latch))]
-        (mr/on r ($ "key") handler)
-        (mr/on r ($ "key") handler)
-        (mr/on r ($ "key") handler)
-        (mr/notify r "key" {})
-        (.await latch 2 TimeUnit/SECONDS))))
+    (let [latch   (CountDownLatch. 3)
+          r       (mr/create :event-routing-strategy :broadcast)
+          res     (atom nil)
+          handler (fn [event] (.countDown latch))]
+      (mr/on r ($ "key") handler)
+      (mr/on r ($ "key") handler)
+      (mr/on r ($ "key") handler)
+      (mr/notify r "key" {})
+      (.await latch 2 TimeUnit/SECONDS)))
 
   (testing "Round Robin routing strategy"
-    (with-latch 6
-      (let [r       (mr/create :event-routing-strategy :round-robin)
-            res     (atom nil)
-            handler (fn [event] (.countDown latch))]
-        (mr/on r ($ "key") (fn [event] (.countDown latch)))
-        (mr/on r ($ "key") (fn [event] (dotimes [i 2] (.countDown latch))))
-        (mr/on r ($ "key") (fn [event] (dotimes [i 3] (.countDown latch))))
+    (let [latch   (CountDownLatch. 6)
+          r       (mr/create :event-routing-strategy :round-robin)
+          res     (atom nil)
+          handler (fn [event] (.countDown latch))]
+      (mr/on r ($ "key") (fn [event] (.countDown latch)))
+      (mr/on r ($ "key") (fn [event] (dotimes [i 2] (.countDown latch))))
+      (mr/on r ($ "key") (fn [event] (dotimes [i 3] (.countDown latch))))
 
-        (mr/notify r "key" {})
-        (mr/notify r "key" {})
-        (mr/notify r "key" {})
-        (.await latch 2 TimeUnit/SECONDS)))))
+      (mr/notify r "key" {})
+      (mr/notify r "key" {})
+      (mr/notify r "key" {})
+      (.await latch 2 TimeUnit/SECONDS))))
 
 (deftest test-responds-to
   (let [r     (mr/create)]
