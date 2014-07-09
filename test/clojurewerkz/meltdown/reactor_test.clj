@@ -108,7 +108,7 @@
         (.await latch 1 TimeUnit/SECONDS))))
 
   (testing "Broadcast routing strategy"
-    (with-latch 3
+    (with-latch 6
       (let [r       (mr/create :event-routing-strategy :broadcast)
             res     (atom nil)
             handler (fn [event] (.countDown latch))]
@@ -116,8 +116,7 @@
         (mr/on r ($ "key") handler)
         (mr/on r ($ "key") handler)
         (mr/notify r "key" {})
-
-        (.await latch 1 TimeUnit/SECONDS))))
+        (.await latch 2 TimeUnit/SECONDS))))
 
   (testing "Round Robin routing strategy"
     (with-latch 6
@@ -131,7 +130,6 @@
         (mr/notify r "key" {})
         (mr/notify r "key" {})
         (mr/notify r "key" {})
-
         (.await latch 2 TimeUnit/SECONDS)))))
 
 (deftest test-responds-to
