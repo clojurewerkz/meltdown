@@ -6,7 +6,7 @@
              :1.5 {:dependencies [[org.clojure/clojure "1.5.1"]]}
              :master {:dependencies [[org.clojure/clojure "1.7.0-master-SNAPSHOT"]]}
              :dev {:resource-paths ["test/resources"]
-                   :dependencies   [[com.lmax/disruptor "3.2.1"]]
+                   :dependencies   [[com.lmax/disruptor "3.3.0"]]
                    :plugins [[codox "0.8.10"]]
                    :codox {:sources ["src/clojure"]
                            :output-dir "doc/api"}}}
