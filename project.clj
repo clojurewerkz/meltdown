@@ -15,7 +15,10 @@
                              :snapshots false
                              :releases {:checksum :fail}}
                  "springsource-milestone" {:url "http://repo.springsource.org/libs-milestone"
-                                           :releases {:checksum :fail :update :always}}}
+                                           :releases {:checksum :fail :update :always}}
+                 "sonatype-snapshots" {:url "http://oss.sonatype.org/content/repositories/snapshots"
+                                       :snapshots true
+                                       :releases {:checksum :fail :update :always}}}
   :javac-options      ["-target" "1.6" "-source" "1.6"]
   :jvm-opts           ["-Dfile.encoding=utf-8"]
   :source-paths       ["src/clojure"]
