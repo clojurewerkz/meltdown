@@ -179,3 +179,80 @@
 
     (let [d @res]
       (is (= [2 3 4 5 6] d)))))
+
+
+(deftest mappend-fmap-test
+  (testing "mapend with fmap on vector monoid"
+    (let [res (atom nil)
+          ch (graph (create :env env)
+                    (mappend* [] #(= 5 (count %))
+                              (fmap* inc
+                                     (consume #(reset! res %)))))]
+
+      (accept ch 1)
+      (accept ch 2)
+      (accept ch 3)
+      (accept ch 4)
+      (accept ch 5)
+
+      (let [d @res]
+        (is (= [2 3 4 5 6] d)))))
+
+  (testing "mapend with fmap on map monoid"
+    (let [res (atom nil)
+          ch (graph (create :env env)
+                    (map* (fn [i] [(if (even? i)
+                                    :even
+                                    :odd)
+                                  i])
+                          (mappend* {}
+                                    #(= 5 (last (:odd %)))
+                                    (fmap* (comp inc inc)
+                                           (consume #(reset! res %))))))]
+
+      (accept ch 1)
+      (accept ch 2)
+      (accept ch 3)
+      (accept ch 4)
+      (accept ch 5)
+
+      (let [d @res]
+        (is (= {:odd [3 5 7], :even [4 6]} d))))))
+
+(deftest mappend-fmap-fold-test
+  (testing "mapend and fold on vector monoid"
+    (let [res (atom nil)
+          ch (graph (create :env env)
+                    (mappend* [] #(= 5 (count %))
+                              (fold* +
+                                     (consume #(reset! res %)))))]
+
+      (accept ch 1)
+      (accept ch 2)
+      (accept ch 3)
+      (accept ch 4)
+      (accept ch 5)
+
+      (let [d @res]
+        (is (= 15 d)))))
+
+  (testing "mapend and fold on map monoid"
+    (let [res (atom nil)
+          ch  (graph (create :env env)
+                     (map* (fn [i] [(if (even? i)
+                                     :even
+                                     :odd)
+                                   i])
+                           (mappend* {}
+                                     #(= 5 (last (:odd %)))
+                                     (fold* +
+                                            (consume #(reset! res %))))))]
+
+      (accept ch 1)
+      (accept ch 2)
+      (accept ch 3)
+      (accept ch 4)
+      (accept ch 5)
+
+      (let [d @res]
+        (is (= {:odd 9, :even 6} d))))))

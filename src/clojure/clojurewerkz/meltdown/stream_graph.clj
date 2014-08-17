@@ -50,6 +50,31 @@
         ~@downstreams
         ~'upstream)))
 
+(defmacro fmap*
+  "Like clojure.core/fmap but for graph computations"
+  ([f] `(ms/fmap* ~f ~'upstream))
+  ([f & downstreams]
+     `(let [~'upstream (ms/fmap* ~f ~'upstream)]
+        ~@downstreams
+        ~'upstream)))
+
+(defmacro fold*
+  "Like clojure.core/fold but for graph computations"
+  ([f] `(ms/fold* ~f ~'upstream))
+  ([f & downstreams]
+     `(let [~'upstream (ms/fold* ~f ~'upstream)]
+        ~@downstreams
+        ~'upstream)))
+
+(defmacro mappend*
+  "Like clojure.core/mappend but for graph computations"
+  ([monoid] `(ms/mappend* ~monoid ~'upstream))
+  ([monoid condition] `(ms/mappend* ~monoid ~condition ~'upstream))
+  ([monoid condition & downstreams]
+     `(let [~'upstream (ms/mappend* ~monoid ~condition ~'upstream)]
+        ~@downstreams
+        ~'upstream)))
+
 (defmacro filter*
   "Like clojure.core/filter but for graph computations"
   ([f]
