@@ -89,6 +89,7 @@ using `clojurewerkz.meltdown.reactor/create`:
 (require '[clojurewerkz.meltdown.reactor :as mr])
 
 (let [reactor (mr/create)]
+  ;; your code
   )
 ```
 
