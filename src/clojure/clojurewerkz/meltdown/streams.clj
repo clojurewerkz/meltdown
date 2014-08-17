@@ -14,17 +14,20 @@
 
 (ns clojurewerkz.meltdown.streams
   (:refer-clojure :exclude [flush])
-  (:import [reactor.core.composable.spec Streams]
-           [reactor.core.composable Stream Deferred]
-           [reactor.core.composable.spec DeferredStreamSpec]
-           [reactor.event.dispatch Dispatcher]
-           [reactor.core Environment]
-           reactor.function.support.Tap
-           [reactor.tuple Tuple2]
-           clojure.lang.IFn)
   (:require [clojurewerkz.meltdown.consumers :as mc]
-            [clojurewerkz.meltdown.fn :as mfn]
-            [clojurewerkz.meltdown.env :as me]))
+            [clojurewerkz.meltdown.fn        :as mfn]
+            [clojurewerkz.meltdown.env       :as me]
+            [clojurewerkz.meltdown.types     :refer :all])
+  (:import
+           [reactor.core.composable.spec    Streams]
+           [reactor.core.composable         Stream Deferred]
+           [reactor.core.composable.spec    DeferredStreamSpec]
+           [reactor.event.dispatch          Dispatcher]
+           [reactor.core                    Environment]
+           [reactor.function.support        Tap]
+           [reactor.tuple                   Tuple2]
+           [clojure.lang                    IFn]))
+
 
 (def dispatcher-types
   {:event-loop "eventLoop"
@@ -62,7 +65,7 @@
   [deferred-or-stream]
   (if (instance? Deferred deferred-or-stream)
     (let [deferred ^Deferred deferred-or-stream]
-        (.compose deferred))
+      (.compose deferred))
     deferred-or-stream))
 
 (defn ^Stream flush
@@ -113,3 +116,26 @@
     (consume (maybe-compose deferred-or-stream)
              #(f % downstream))
     (.compose downstream)))
+
+(defn mappend*
+  ([monoid deferred-or-stream]
+     (mappend* monoid (constantly true) deferred-or-stream))
+  ([monoid condition deferred-or-stream]
+     (let [state (atom (mempty monoid))]
+       (custom-stream
+        (fn [event downstream]
+          (let [new-v (swap! state mappend event)]
+            (when (condition new-v)
+              (accept downstream new-v)
+              (reset! state (mempty monoid)))))
+        deferred-or-stream))))
+
+(defn fmap*
+  [f deferred-or-stream]
+  (let [stream (maybe-compose deferred-or-stream)]
+    (.map stream (mfn/->function #(fmap % f)))))
+
+(defn fold*
+  [f deferred-or-stream]
+  (let [stream (maybe-compose deferred-or-stream)]
+    (.map stream (mfn/->function #(fold % f)))))
