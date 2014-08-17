@@ -245,7 +245,6 @@
                                    i])
                            (mappend* {}
                                      #(= 5 (last (:odd %)))
-                                     (consume println)
                                      (fmap* inc
                                             (fold* +
                                                    (consume #(reset! res %)))))))]
