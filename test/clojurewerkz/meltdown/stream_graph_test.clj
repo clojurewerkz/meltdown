@@ -245,8 +245,10 @@
                                    i])
                            (mappend* {}
                                      #(= 5 (last (:odd %)))
-                                     (fold* +
-                                            (consume #(reset! res %))))))]
+                                     (consume println)
+                                     (fmap* inc
+                                            (fold* +
+                                                   (consume #(reset! res %)))))))]
 
       (accept ch 1)
       (accept ch 2)
@@ -255,4 +257,4 @@
       (accept ch 5)
 
       (let [d @res]
-        (is (= {:odd 9, :even 6} d))))))
+        (is (= {:odd 12, :even 8} d))))))

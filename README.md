@@ -592,7 +592,7 @@ This monoid has a constructor `mempty` that returns an empty list, and
 
 Another example of Monoid is `MinValue`:
 
-```
+```clj
 (deftype MinValue [a]
   clojure.lang.IDeref
   (deref [_] a))
@@ -656,8 +656,55 @@ fold :: [a] -> ([a] -> b) -> b
 fold :: {a [b]} -> ([b] -> c) -> {a c}
 ```
 
-With these three powerful concepts you can create new contexts of your own, that
-make more sense inside of your application. 
+You may wonder, what it gives us in terms of stream processing and why that even
+matters. Let's check out a simple example:
+
+```clj
+(graph (create :env env)
+       ;; (1)
+       (map* (fn [i] [(if (even? i)
+                       :even
+                       :odd)
+                     i])
+             ;; (2)
+             (mappend* {}
+                       ;; (3)
+                       #(= 5 (last (:odd %)))
+                       ;; (4)
+                       (fmap* inc
+                              ;; (5)
+                              (fold* +
+                                     (consume #(reset! res %)))))))
+```                          
+
+Here we have several steps:
+  * (1) at first we're transforming our incoming numbers into a vector of `[<parity>, number]`. For example, for 1 it would return `[:odd 1]` and `[:even 2]` for 2.
+  * (2) these tuples are then passes into `mappend*`, which is initialized with `{}` (group/hash) monoid. Since there on all our items will be collected into the hashmap, holding hash of `{<parity> [<items>]}`:
+
+```clj
+{:even [2 4], :odd [1 3 5]}
+```  
+  
+  * (3) here, we just specify a "flush" condition. So whenever we see "5", we flush. Although that may be as well any other logical predicate.
+  * (4) now, we want to apply `inc` to every element of each group. So, we apply inc to each element in each key-value pair:
+
+```clj
+{:even (map inc [2 4]), :odd (map inc [1 3 5])}
+;; => {:even [3 5], :odd [2 4 6]}
+```  
+
+  * (5) we can now use `fold` to get sums of all elements for each group, obtaining our final result: 
+  
+```clj
+{:odd 12, :even 8}
+```
+
+This was a simplifed example, but even here you may notice that having an ability to 
+iterate over different colleciton types in different ways may help to simplify stream
+processing code and avoid boilerplate. By retaining semantics of operations (operation
+that executed on each item within the context, or item that folds all the values 
+within the relevant context), you can build your own abstractions and make your code
+easier to write, understand, debug and extend.
 
 ## Performance
 
