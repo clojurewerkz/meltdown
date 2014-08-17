@@ -568,6 +568,97 @@ You should be aware of the fact that if your handlers never finish (for
 example, there's an endless loop inside one of handlers), you'll
 eventually run out of available handlers, and won't be able to proceed.
 
+## Functional Programming Paradigms
+
+In Meltdown, we support three basic primitives of functional composition,
+such as Monoid, Functor and Foldable. Monoids are used to build either 
+sequences (lists, groups), searching for maximum or minimum, finding 
+a sum of the stream and so on.
+
+### Monoids 
+
+Monoid consists of 2 operation: `mempty` (sometimes called `mzero`) and 
+`mappend`. One of our monoid instances is a list:
+
+```clj
+(extend-protocol Monoid
+  clojure.lang.PersistentVector
+    (mempty [_] [])
+    (mappend [old new] (conj old new)))
+```
+
+This monoid has a constructor `mempty` that returns an empty list, and
+`mappend` which appends new elements of the stream to the list.
+
+Another example of Monoid is `MinValue`:
+
+```
+(deftype MinValue [a]
+  clojure.lang.IDeref
+  (deref [_] a))
+
+(extend-protocol Monoid
+  MinValue
+  (mempty [_] (MinValue. (Double/POSITIVE_INFINITY)))
+  (mappend [old new] (MinValue. (min @old new))))
+  
+;; (mconcat (MinValue. 1) [1 2 3 4])
+;; => #<MinValue@45061e92: 1>
+```
+
+`MinValue` is just a container for a value that it holds. `mempty` would
+in that case be either an "empty value" (MinEmpty, if you wish), but for simplicity
+I decided to construct it with Positive Infinity, since everything is less than positive
+infinity. `mappend` operation finds a minimum of old and new value and puts it
+back into `MinValue` context.
+
+### Functor 
+
+We use functors to distinquish between the ways we "go into" the context. Functor
+has only 1 function in it's interface, and it's `fmap`. For example, want to run `inc`
+(increment by 1) within a list, we would use `map`, that would apply our function to
+the every element of the list. Same thing for our `group` (which is essentially a 
+hashmap of `{group-name [group-value]}`), we would have to apply this function to 
+_each element_ of `[group-value]` for each `group-name`. 
+
+If we wanted to fun `inc` on `MinValue`, we would just extract the value from `MinValue`
+context, run `inc` on it and pack it back into `MinValue`:
+
+```clj
+(extend-protocol Functor
+  MinValue
+  (fmap [v f]
+    (MinValue. (f @v))))
+;; (fmap (MinValue. 5) inc)
+;; => #<MinValue@1bf9ff6e: 6>
+```    
+
+So, Functor would be a convenient way apply functions in different contexts. 
+
+### Foldable
+
+Whenever we have some context, we want to some way to fold it. Folding mostly 
+makes sense for collection. 
+
+Inside meltdown, we support 2 types of folds by default: 
+
+  * fold of list (which is essentially `reduce`)
+
+```
+fold :: [a] -> ([a] -> b) -> b
+```
+  
+  * and fold on groups, which would reduce values of an entire group to a 
+  single value:
+  
+``` 
+;; Pardon my pseudotypesignature 
+fold :: {a [b]} -> ([b] -> c) -> {a c}
+```
+
+With these three powerful concepts you can create new contexts of your own, that
+make more sense inside of your application. 
+
 ## Performance
 
 Throughput tests are included. They're formed in same exact way
