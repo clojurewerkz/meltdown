@@ -4,7 +4,7 @@
                  [org.projectreactor/reactor-core "1.1.4.RELEASE"]]
   :profiles {:1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
              :1.5 {:dependencies [[org.clojure/clojure "1.5.1"]]}
-             :1.7 {:dependencies [[org.clojure/clojure "1.7.0-alpha1"]]}
+             :1.7 {:dependencies [[org.clojure/clojure "1.7.0-alpha2"]]}
              :master {:dependencies [[org.clojure/clojure "1.7.0-master-SNAPSHOT"]]}
              :dev {:resource-paths ["test/resources"]
                    :dependencies   [[com.lmax/disruptor "3.3.0"]]
