@@ -1,4 +1,4 @@
-## Changes between 1.0.0 and 1.1.0
+## Changes between 1.0.0 and 2.0.0
 
 ### Reactor Update
 

@@ -1,4 +1,4 @@
-(defproject clojurewerkz/meltdown "1.1.0-beta2-SNAPSHOT"
+(defproject clojurewerkz/meltdown "2.0.0-SNAPSHOT"
   :description "Clojure interface to Reactor, an event-driven programming toolkit for the JVM"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.projectreactor/reactor-core "1.1.4.RELEASE"]]
