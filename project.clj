@@ -1,6 +1,7 @@
 (defproject clojurewerkz/meltdown "2.0.0-SNAPSHOT"
   :description "Clojure interface to Reactor, an event-driven programming toolkit for the JVM"
   :url "https://github.com/clojurewerkz/meltdown"
+  :license {:name "Eclipse Public License"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.projectreactor/reactor-core "1.1.5.RELEASE"]]
   :profiles {:1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
