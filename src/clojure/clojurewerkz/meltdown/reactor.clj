@@ -34,6 +34,7 @@
            [reactor.event Event]
            java.lang.Throwable
            [reactor.core Reactor]
+           [reactor.core.composable.spec DeferredStreamSpec]
            [reactor.core.spec Reactors]))
 
 (def dispatcher-types
@@ -70,7 +71,7 @@
   ([^Reactor reactor payload]
      (.notify reactor (Event. payload)))
   ([^Reactor reactor key payload]
-     (.notify reactor ^Object key ^Event (Event. payload) nil))
+     (.notify reactor ^Object key (Event. payload) nil))
   ([^Reactor reactor key payload ^IFn completion-fn]
      (.notify reactor ^Object key (Event. payload) ^Consumer (mc/from-fn completion-fn))))
 
