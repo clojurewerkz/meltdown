@@ -727,9 +727,10 @@ Meltdown requires Clojure 1.6+.
 ## Meltdown Is a ClojureWerkz Project
 
 Meltdown is part of the [group of Clojure libraries known as ClojureWerkz](http://clojurewerkz.org), together with
- * [Monger](http://clojuremongodb.info)
  * [Langohr](https://github.com/michaelklishin/langohr)
- * [Elastisch](https://github.com/clojurewerkz/elastisch)
+ * [Elastisch](http://clojureelasticsearch.info)
+ * [Cassaforte](http://clojurecassandra.info)
+ * [Monger](http://clojuremongodb.info)
  * [Titanium](http://titanium.clojurewerkz.org)
  * [Welle](http://clojureriak.info)
  * [Neocons](http://clojureneo4j.info)
