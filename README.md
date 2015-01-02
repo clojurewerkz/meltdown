@@ -739,7 +739,7 @@ Meltdown is part of the [group of Clojure libraries known as ClojureWerkz](http:
 
 ## Development
 
-Meltdown uses [Leiningen 2](http://leiningen.org). Make
+Meltdown uses [Leiningen](http://leiningen.org). Make
 sure you have it installed and then run tests against supported
 Clojure versions using
 
