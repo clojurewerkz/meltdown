@@ -715,7 +715,7 @@ directly. Overhead is insignificant.
 
 ## Supported Clojure Versions
 
-Meltdown is built from the ground up for Clojure 1.4+.
+Meltdown requires Clojure 1.6+.
 
 
 ## Continuous Integration Status
