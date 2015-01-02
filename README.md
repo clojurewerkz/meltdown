@@ -709,7 +709,7 @@ easier to write, understand, debug and extend.
 
 ## Performance
 
-Throughput tests are included. They're formed in same exact way
+Basic throughput tests are included. They're set up in the exact same way
 Reactor's throughput tests are done, therefore you can compare outputs
 directly. Overhead is insignificant.
 
