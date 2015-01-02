@@ -738,8 +738,7 @@ Meltdown is part of the [group of Clojure libraries known as ClojureWerkz](http:
 
 ## Development
 
-Meltdown uses [Leiningen
-2](http://leiningen.org). Make
+Meltdown uses [Leiningen 2](http://leiningen.org). Make
 sure you have it installed and then run tests against supported
 Clojure versions using
 
@@ -752,7 +751,7 @@ with your changes and all tests pass, submit a pull request on GitHub.
 
 ## License
 
-Copyright (C) 2013-2014 Michael S. Klishin, Alex Petrov.
+Copyright (C) 2013-2015 Michael S. Klishin, Alex Petrov, and the ClojureWerkz team.
 
 Double licensed under the [Eclipse Public License](http://www.eclipse.org/legal/epl-v10.html) (the same as Clojure) or
 the [Apache Public License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
