@@ -2,6 +2,7 @@
   :description "Clojure interface to Reactor, an event-driven programming toolkit for the JVM"
   :url "https://github.com/clojurewerkz/meltdown"
   :license {:name "Eclipse Public License"}
+  :min-lein-version "2.5.1"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.projectreactor/reactor-core "1.1.5.RELEASE"]]
   :profiles {:1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
