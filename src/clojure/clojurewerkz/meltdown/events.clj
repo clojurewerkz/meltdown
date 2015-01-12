@@ -21,7 +21,7 @@
   [^Event event]
   {:data     (.getData event)
    :reply-to (.getReplyTo event)
-   :headers  (into {} (.getHeaders event))
+   :headers  (into {} (-> event .getHeaders .asMap))
    :key      (.getKey event)
    :id       (.getId event)})
 
