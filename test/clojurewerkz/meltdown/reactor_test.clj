@@ -4,7 +4,10 @@
             [clojurewerkz.meltdown.selectors :as ms :refer [$ R]]
             [clojurewerkz.meltdown.consumers :as mc]
             [clojurewerkz.meltdown.events :as me])
-  (:import [java.util.concurrent CountDownLatch TimeUnit]))
+  (:import [java.util.concurrent CountDownLatch TimeUnit]
+           [clojurewerkz.meltdown DefaultingCachingRegistry]))
+
+(alter-var-root #'*out* (constantly *out*))
 
 (defmacro with-latch
   [countdown-from & body]
@@ -28,6 +31,23 @@
       (.await latch 1 TimeUnit/SECONDS)
       (let [d @res]
         (is (= key (:key d)))
+        (is (:id d))
+        (is (= {} (:headers d)))
+        (is (= "delivered" (get-in d [:data :event])))))))
+
+(deftest test-basic-delivery-default-consumer
+  (with-latch 1
+    (let [res   (atom nil)
+          r     (mr/create :consumer-registry (DefaultingCachingRegistry.
+                                                (mc/from-fn
+                                                 (fn [event]
+                                                   (reset! res event)
+                                                   (.countDown latch)))))
+          key   "events.silly"
+          data  {:event "delivered"}]
+      (mr/notify r key data)
+      (let [d @res]
+        (is (= (:key d)))
         (is (:id d))
         (is (= {} (:headers d)))
         (is (= "delivered" (get-in d [:data :event])))))))
