@@ -103,7 +103,7 @@
    A new router is instantiated for every reactor,
    otherwise reactors will needlessly share state"
   [& {:keys [^DeferredStreamSpec dispatcher-type event-routing-strategy ^Environment env ^Dispatcher dispatcher
-             consumer-not-found-handler]}]
+             consumer-not-found-handler consumer-registry]}]
   (let [spec (Reactors/reactor)]
     (if env
       (.env spec env)
@@ -113,9 +113,8 @@
       (if dispatcher-type
         (.dispatcher spec ^String (dispatcher-type dispatcher-types))
         (.synchronousDispatcher spec)))
-    (when consumer-not-found-handler
-      (.consumerNotFoundHandler spec
-                                (mc/from-fn-raw consumer-not-found-handler)))
+    (when consumer-registry
+      (.consumerRegistry spec consumer-registry))
     (when event-routing-strategy
       (when (= :first event-routing-strategy)
         (.firstEventRouting spec))
