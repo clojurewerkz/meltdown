@@ -46,7 +46,7 @@ are using Maven, add the following repository definition to your `pom.xml`:
 With Leiningen:
 
 ```clj
-[clojurewerkz/meltdown "1.0.0"]
+[clojurewerkz/meltdown "1.1.0"]
 ```
 
 With Maven:
@@ -55,7 +55,7 @@ With Maven:
 <dependency>
   <groupId>clojurewerkz</groupId>
   <artifactId>meltdown</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
@@ -709,13 +709,13 @@ easier to write, understand, debug and extend.
 
 ## Performance
 
-Throughput tests are included. They're formed in same exact way
+Basic throughput tests are included. They're set up in the exact same way
 Reactor's throughput tests are done, therefore you can compare outputs
 directly. Overhead is insignificant.
 
 ## Supported Clojure Versions
 
-Meltdown is built from the ground up for Clojure 1.4+.
+Meltdown requires Clojure 1.6+.
 
 
 ## Continuous Integration Status
@@ -727,9 +727,10 @@ Meltdown is built from the ground up for Clojure 1.4+.
 ## Meltdown Is a ClojureWerkz Project
 
 Meltdown is part of the [group of Clojure libraries known as ClojureWerkz](http://clojurewerkz.org), together with
- * [Monger](http://clojuremongodb.info)
  * [Langohr](https://github.com/michaelklishin/langohr)
- * [Elastisch](https://github.com/clojurewerkz/elastisch)
+ * [Elastisch](http://clojureelasticsearch.info)
+ * [Cassaforte](http://clojurecassandra.info)
+ * [Monger](http://clojuremongodb.info)
  * [Titanium](http://titanium.clojurewerkz.org)
  * [Welle](http://clojureriak.info)
  * [Neocons](http://clojureneo4j.info)
@@ -738,8 +739,7 @@ Meltdown is part of the [group of Clojure libraries known as ClojureWerkz](http:
 
 ## Development
 
-Meltdown uses [Leiningen
-2](http://leiningen.org). Make
+Meltdown uses [Leiningen](http://leiningen.org). Make
 sure you have it installed and then run tests against supported
 Clojure versions using
 
@@ -752,10 +752,7 @@ with your changes and all tests pass, submit a pull request on GitHub.
 
 ## License
 
-Copyright (C) 2013-2014 Michael S. Klishin, Alex Petrov.
+Copyright (C) 2013-2015 Michael S. Klishin, Alex Petrov, and the ClojureWerkz team.
 
 Double licensed under the [Eclipse Public License](http://www.eclipse.org/legal/epl-v10.html) (the same as Clojure) or
 the [Apache Public License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/clojurewerkz/meltdown/trend.png)](https://bitdeli.com/free "Bitdeli Badge")

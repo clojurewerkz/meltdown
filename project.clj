@@ -1,16 +1,18 @@
-(defproject clojurewerkz/meltdown "1.1.0-SNAPSHOT"
+(defproject clojurewerkz/meltdown "2.0.0-SNAPSHOT"
   :description "Clojure interface to Reactor, an event-driven programming toolkit for the JVM"
+  :url "https://github.com/clojurewerkz/meltdown"
+  :license {:name "Eclipse Public License"}
+  :min-lein-version "2.5.1"
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.projectreactor/reactor-core "1.1.4.RELEASE"]]
-  :profiles {:1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
-             :1.5 {:dependencies [[org.clojure/clojure "1.5.1"]]}
+                 [org.projectreactor/reactor-core "1.1.5.RELEASE"]]
+  :profiles {:1.7 {:dependencies [[org.clojure/clojure "1.7.0-alpha5"]]}
              :master {:dependencies [[org.clojure/clojure "1.7.0-master-SNAPSHOT"]]}
              :dev {:resource-paths ["test/resources"]
                    :dependencies   [[com.lmax/disruptor "3.3.0"]]
                    :plugins [[codox "0.8.10"]]
                    :codox {:sources ["src/clojure"]
                            :output-dir "doc/api"}}}
-  :aliases {"all" ["with-profile" "dev:dev,1.4:dev,1.5:dev,master"]}
+  :aliases {"all" ["with-profile" "dev:dev,1.7:dev,master"]}
   :repositories {"sonatype" {:url "http://oss.sonatype.org/content/repositories/releases"
                              :snapshots false
                              :releases {:checksum :fail}}

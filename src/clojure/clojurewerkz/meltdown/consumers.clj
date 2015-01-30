@@ -34,7 +34,7 @@
   [^IFn f]
   (IFnConsumer. f))
 
-(defn ^boolean paused?
+(defn ^{:tag 'boolean} paused?
   [^Registration reg]
   (.isPaused reg))
 
@@ -47,7 +47,7 @@
   (.resume reg))
 
 
-(defn ^boolean cancelled?
+(defn ^{:tag 'boolean} cancelled?
   [^Registration reg]
   (.isCancelled reg))
 
@@ -55,7 +55,7 @@
   [^Registration reg]
   (.cancel reg))
 
-(defn ^boolean cancel-after-use?
+(defn ^{:tag 'boolean} cancel-after-use?
   [^Registration reg]
   (.isCancelAfterUse reg))
 
@@ -72,7 +72,7 @@
   (let [^Registry xs (consumer-registry-of r)]
     (remove nil? (into [] xs))))
 
-(defn ^long consumer-count
+(defn ^{:tag 'long} consumer-count
   [^Reactor r]
   (let [^Registry xs (consumer-registry-of r)]
     (count (remove nil? (into [] xs)))))

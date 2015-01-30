@@ -62,9 +62,9 @@
     (throughput-test (mr/create :dispatcher-type :event-loop)))
   (testing "Thread Pool Executor"
     (throughput-test (mr/create :dispatcher-type :thread-pool)))
-  (testing "Ring Buffer"
+  (testing "Ring Buffer with all defaults"
     (throughput-test (mr/create :dispatcher-type :ring-buffer)))
-  (testing "Ring Buffer"
+  (testing "Ring Buffer with multi-producer and YieldingWait"
     (throughput-test (mr/create :dispatcher (RingBufferDispatcher.
                                              "dispatcher-name"
                                              (int 4096)
