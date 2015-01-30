@@ -1,5 +1,10 @@
 ## Changes between 1.0.0 and 2.0.0
 
+### Clojure 1.4 and 1.5 Support Dropped
+
+Clojure versions 1.4 and 1.5 are no longer supported.
+
+
 ### Reactor Update
 
 Reactor is updated to `1.1.x`.
