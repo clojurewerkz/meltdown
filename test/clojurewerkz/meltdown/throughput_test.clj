@@ -9,7 +9,14 @@
            [reactor.event Event]
            [reactor.core Reactor]
            [com.lmax.disruptor.dsl ProducerType]
-           [com.lmax.disruptor YieldingWaitStrategy]))
+           [com.lmax.disruptor YieldingWaitStrategy]
+           java.text.NumberFormat)
+  (:refer-clojure :exclude [format]))
+
+(defn ^String format
+  [^long n]
+  (let [nf (NumberFormat/getInstance)]
+    (.format nf n)))
 
 (defn register-consumers-and-warm-cache
   [^Reactor reactor objects consumer]
@@ -30,12 +37,12 @@
 (defn throughput-test
   [^Reactor reactor]
   (let [selectors  250
-        iterations 7500
-        test-runs  3
+        iterations 100000
+        test-runs  5
         _          (def latch (CountDownLatch. (* selectors iterations)))
         objects    (vec (take selectors (gen-objects)))
         consumer   (mc/from-fn-raw (fn [_] (.countDown ^CountDownLatch latch)))
-        hello      (me/ev :data "Hello World!")]
+        hello      (me/ev :data "Hello, world!")]
     (time
      (register-consumers-and-warm-cache reactor objects consumer))
     (dotimes [tr test-runs]
@@ -44,15 +51,16 @@
           (doseq [o objects]
             (mr/notify-raw ^Reactor reactor o ^Event hello)))
         (.await latch)
-        (let [end (System/currentTimeMillis)
-              elapsed (- end start)]
+        (let [end     (System/currentTimeMillis)
+              elapsed (- end start)
+              n       (Math/round (float (/ (* selectors iterations) (/ elapsed 1000))))]
           (println
            (str
             (-> reactor
                 (.getDispatcher)
                 (.getClass)
                 (.getSimpleName))
-            " throughput (" elapsed "ms): " (Math/round (float (/ (* selectors iterations) (/ elapsed 1000))))
+            " throughput (" elapsed "ms): " (format n)
             "/sec")))
         (def latch (CountDownLatch. (* selectors iterations)))))
     (.shutdown (.getDispatcher reactor))))
