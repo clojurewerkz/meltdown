@@ -22,7 +22,7 @@
                                        :snapshots true
                                        :releases {:checksum :fail :update :always}}}
   :javac-options      ["-target" "1.6" "-source" "1.6"]
-  :jvm-opts           ["-Dfile.encoding=utf-8"]
+  :jvm-opts ^:replace ["-Xms1g" "-Xmx2g" "-server" "-XX:+AggressiveOpts" "-XX:+UseFastAccessorMethods" "-Dfile.encoding=utf-8"]
   :source-paths       ["src/clojure"]
   :java-source-paths  ["src/java"]
   :global-vars {*warn-on-reflection* true}
