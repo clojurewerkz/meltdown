@@ -30,7 +30,7 @@
 
 
 (def dispatcher-types
-  {:event-loop "eventLoop"
+  {:event-loop  "eventLoop"
    :thread-pool "threadPoolExecutor"
    :ring-buffer "ringBuffer"})
 
