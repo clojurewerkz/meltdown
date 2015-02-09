@@ -28,3 +28,19 @@
     (mr/notify reactor :upstream 1)
 
     (is (= @res 4))))
+
+(deftest test-reduce*
+  (let [reactor (mr/create)
+        stream  (anonymous-stream reactor :upstream :downstream
+                                  (map* #(inc (.getData %)))
+                                  (reduce* #(+ %1 (.getData %2)) 0))
+        res     (atom nil)]
+
+    (consume reactor ($ :downstream) #(reset! res (:data %)))
+
+    (mr/notify reactor :upstream 1)
+    (mr/notify reactor :upstream 2)
+    (mr/notify reactor :upstream 3)
+    (mr/notify reactor :upstream 4)
+
+    (is (= @res 14))))

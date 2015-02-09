@@ -40,6 +40,15 @@
   [reactor selector downstream-key i]
   (split* reactor selector downstream-key #(== i (count %))))
 
+(defn reduce*
+  [reactor selector downstream-key f initial]
+  (let [state (atom initial)]
+    (register-consumer reactor selector
+                       (mc/from-fn-raw
+                        (fn [event]
+                          (notify reactor downstream-key (swap! state #(f % event)))))))
+  reactor)
+
 (defn consume
   [reactor selector f]
   (on reactor selector f)
