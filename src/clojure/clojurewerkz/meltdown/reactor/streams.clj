@@ -9,7 +9,7 @@
 (defn map*
   [reactor selector downstream-key f]
   (register-consumer reactor selector
-                     (mc/from-fn
+                     (mc/from-fn-raw
                       #(notify reactor downstream-key
                                (f %))))
   reactor)
@@ -17,24 +17,28 @@
 (defn filter*
   [reactor selector downstream-key filter-fn]
   (register-consumer reactor selector
-                     (mc/from-fn
+                     (mc/from-fn-raw
                       #(when (filter-fn %)
                          (notify reactor downstream-key %))))
   reactor)
 
-(defn batch*
-  [reactor selector downstream-key i]
+(defn split*
+  [reactor selector downstream-key split-fn]
   (let [state (atom [])
         lock  (Object.)]
     (register-consumer reactor selector
-                       (mc/from-fn
+                       (mc/from-fn-raw
                         (fn [event]
                           (locking lock
                             (let [st (swap! state conj event)]
-                              (when (== i (count st))
+                              (when (split-fn st)
                                 (notify reactor downstream-key st)
                                 (reset! state []))))))))
   reactor)
+
+(defn batch*
+  [reactor selector downstream-key i]
+  (split* reactor selector downstream-key #(== i (count %))))
 
 (defn consume
   [reactor selector f]
@@ -52,5 +56,4 @@
       (let [current-key (keyword (gensym))
             ;; current-obj      (get-object current-selector)
             threaded    `(~(first form) ~reactor ($ ~parent-key) ~current-key ~@(next form))]
-        (recur (conj x threaded) current-key more))
-      )))
+        (recur (conj x threaded) current-key more)))))
