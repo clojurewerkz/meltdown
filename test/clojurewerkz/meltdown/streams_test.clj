@@ -62,9 +62,9 @@
 
 
 (deftest basic-stream-reduce-test
-  (let [ch (create :env env)
-        stream  (reduce* #(+ %1 %2) 0 ch)
-        res     (atom nil)]
+  (let [ch     (create :env env)
+        stream (reduce* #(+ %1 %2) 0 ch)
+        res    (atom nil)]
 
     (consume stream #(reset! res %))
 
@@ -76,7 +76,7 @@
     (is (= 6 @res))))
 
 (deftest custom-stream-test
-  (let [ch            (create :env env)
+  (let [ch                 (create :env env)
         incrementer        (map* inc ch)
         every-fifth-stream (let [counter (atom 0)]
                              (custom-stream
