@@ -62,9 +62,7 @@
 (defn register-consumer
   "Registers a Clojure function as event handler for a particular kind of events."
   ([^Reactor reactor ^Selector selector ^Consumer consumer]
-     (.on reactor selector consumer))
-  ([^Reactor reactor ^Consumer consumer]
-     (.on reactor consumer)))
+     (.on reactor selector consumer)))
 
 (defn notify
   "Broadcasts a event instantiated from provided payload (data structure)"
