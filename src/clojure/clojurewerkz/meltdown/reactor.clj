@@ -67,9 +67,9 @@
 (defn notify
   "Broadcasts a event instantiated from provided payload (data structure)"
   ([^Reactor reactor payload]
-     (.notify reactor (Event. payload)))
+     (.notify reactor (maybe-wrap-event payload)))
   ([^Reactor reactor key payload]
-     (.notify reactor ^Object key (Event. payload) nil))
+     (.notify reactor key ^Event (maybe-wrap-event payload) nil))
   ([^Reactor reactor key payload ^IFn completion-fn]
      (.notify reactor ^Object key (Event. payload) ^Consumer (mc/from-fn completion-fn))))
 
