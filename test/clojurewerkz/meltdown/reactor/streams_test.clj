@@ -17,13 +17,15 @@
 
 (deftest test-anonymous-stream
   (let [reactor (mr/create)
+        res     (atom nil)
         stream  (anonymous-stream reactor :upstream :downstream
                                   (map* #(inc (.getData %)))
                                   (map* #(inc (.getData %)))
-                                  (map* #(inc (.getData %))))
-        res     (atom nil)]
+                                  (map* #(inc (.getData %)))
+                                  (consume #(reset! res (:data %))))
+        ]
 
-    (consume reactor ($ :downstream) #(reset! res (:data %)))
+
 
     (mr/notify reactor :upstream 1)
 

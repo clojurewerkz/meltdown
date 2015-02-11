@@ -50,9 +50,11 @@
   reactor)
 
 (defn consume
-  [reactor selector f]
-  (on reactor selector f)
-  reactor)
+  ([reactor selector f]
+     (consume reactor selector nil f))
+  ([reactor selector downstream-key f]
+     (on reactor selector f)
+     reactor))
 
 (defmacro anonymous-stream
   [reactor root-key downstream-key & forms]
@@ -63,6 +65,5 @@
       (conj x
             `(~(first form) ~reactor ($ ~parent-key) ~downstream-key ~@(next form)))
       (let [current-key (keyword (gensym))
-            ;; current-obj      (get-object current-selector)
             threaded    `(~(first form) ~reactor ($ ~parent-key) ~current-key ~@(next form))]
         (recur (conj x threaded) current-key more)))))
