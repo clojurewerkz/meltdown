@@ -14,14 +14,16 @@
                    :codox {:sources ["src/clojure"]
                            :output-dir "doc/api"}}}
   :aliases {"all" ["with-profile" "dev:dev,1.7:dev,master"]}
-  :repositories {"sonatype" {:url "http://oss.sonatype.org/content/repositories/releases"
-                             :snapshots false
-                             :releases {:checksum :fail}}
+  :repositories {"sonatype"               {:url "http://oss.sonatype.org/content/repositories/releases"
+                                           :snapshots false
+                                           :releases {:checksum :fail}}
+                 "springsource-snapshot"  {:url      "http://repo.springsource.org/libs-snapshot"
+                                           :releases {:checksum :fail :update :always}}
                  "springsource-milestone" {:url "http://repo.springsource.org/libs-milestone"
                                            :releases {:checksum :fail :update :always}}
-                 "sonatype-snapshots" {:url "http://oss.sonatype.org/content/repositories/snapshots"
-                                       :snapshots true
-                                       :releases {:checksum :fail :update :always}}}
+                 "sonatype-snapshots"     {:url "http://oss.sonatype.org/content/repositories/snapshots"
+                                           :snapshots true
+                                           :releases {:checksum :fail :update :always}}}
   :javac-options      ["-target" "1.6" "-source" "1.6"]
   :jvm-opts ^:replace ["-Xms1g" "-Xmx2g" "-server" "-XX:+AggressiveOpts" "-XX:+UseFastAccessorMethods" "-Dfile.encoding=utf-8"]
   :source-paths       ["src/clojure"]
