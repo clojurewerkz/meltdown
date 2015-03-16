@@ -9,7 +9,7 @@
 (def env (me/environment))
 
 (deftest basic-stream-map-test
-  (let [ch (create :env env)
+  (let [ch      (create :env env)
         stream  (map* inc ch)
         stream2 (map* #(+ 2 %) stream)
         stream3 (map* #(+ 3 %) stream2)
