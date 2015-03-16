@@ -1,13 +1,16 @@
 (ns clojurewerkz.meltdown.reactor-test
   (:require [clojure.test :refer :all]
             [clojurewerkz.meltdown.reactor   :as mr]
+            [clojurewerkz.meltdown.env       :as me]
             [clojurewerkz.meltdown.selectors :as ms :refer [$ R]]
-            [clojurewerkz.meltdown.consumers :as mc]
-            [clojurewerkz.meltdown.events :as me])
-  (:import [java.util.concurrent CountDownLatch TimeUnit]
-           [clojurewerkz.meltdown DefaultingCachingRegistry]))
+            [clojurewerkz.meltdown.consumers :as mc])
+  (:import [java.util.concurrent   CountDownLatch TimeUnit]
+           [reactor.event.dispatch WorkQueueDispatcher]
+           [clojurewerkz.meltdown  DefaultingCachingRegistry]))
 
 (alter-var-root #'*out* (constantly *out*))
+
+(def __env (me/environment))
 
 (defmacro with-latch
   [countdown-from & body]
@@ -20,7 +23,7 @@
 
 (deftest test-basic-delivery
   (with-latch 1
-    (let [r     (mr/create)
+    (let [r     (mr/create :env __env)
           key   "events.silly"
           data  {:event "delivered"}
           res   (atom nil)]
@@ -38,11 +41,12 @@
 (deftest test-basic-delivery-default-consumer
   (with-latch 1
     (let [res   (atom nil)
-          r     (mr/create :consumer-registry (DefaultingCachingRegistry.
-                                                (mc/from-fn
-                                                 (fn [event]
-                                                   (reset! res event)
-                                                   (.countDown latch)))))
+          r     (mr/create  :env __env
+                            :consumer-registry (DefaultingCachingRegistry.
+                                                 (mc/from-fn
+                                                  (fn [event]
+                                                    (reset! res event)
+                                                    (.countDown latch)))))
           key   "events.silly"
           data  {:event "delivered"}]
       (mr/notify r key data)
@@ -54,13 +58,13 @@
 
 (deftest test-fanout-delivery
   (with-latch 2
-    (let [r     (mr/create)
-          key   "events.silly"
-          data  {:event "delivered"}
-          res   (atom [])
-          f     (fn [event]
-                  (swap! res conj event)
-                  (.countDown latch))]
+    (let [r    (mr/create :env __env)
+          key  "events.silly"
+          data {:event "delivered"}
+          res  (atom [])
+          f    (fn [event]
+                 (swap! res conj event)
+                 (.countDown latch))]
       (mr/on r ($ key) f)
       (mr/on r ($ key) f)
       (mr/notify r key data)
@@ -74,7 +78,7 @@
 
 (deftest test-regex-delivery
   (with-latch 3
-    (let [r     (mr/create)
+    (let [r     (mr/create :env __env)
           data  {:event "delivered"}
           res   (atom nil)]
       (mr/on r (R "events.*") (fn [event]
@@ -94,7 +98,7 @@
 
 (deftest test-request-response
   (with-latch 2
-    (let [r                                (mr/create)
+    (let [r                                (mr/create :env __env)
           key                              "hello"
           selector                         ($ key)
           [reply-to-selector reply-to-key] ($)
@@ -117,7 +121,8 @@
 (deftest routing-strategies
   (testing "First routing strategy"
     (with-latch 1
-      (let [r       (mr/create :event-routing-strategy :first)
+      (let [r       (mr/create  :env __env
+                                :event-routing-strategy :first)
             res     (atom nil)
             handler (fn [event] (.countDown latch))]
         (mr/on r ($ "key") handler)
@@ -129,7 +134,8 @@
 
   (testing "Broadcast routing strategy"
     (let [latch   (CountDownLatch. 3)
-          r       (mr/create :event-routing-strategy :broadcast)
+          r       (mr/create  :env __env
+                              :event-routing-strategy :broadcast)
           res     (atom nil)
           handler (fn [event] (.countDown latch))]
       (mr/on r ($ "key") handler)
@@ -140,7 +146,8 @@
 
   (testing "Round Robin routing strategy"
     (let [latch   (CountDownLatch. 6)
-          r       (mr/create :event-routing-strategy :round-robin)
+          r       (mr/create :env __env
+                             :event-routing-strategy :round-robin)
           res     (atom nil)
           handler (fn [event] (.countDown latch))]
       (mr/on r ($ "key") (fn [event] (.countDown latch)))
@@ -153,7 +160,7 @@
       (.await latch 2 TimeUnit/SECONDS))))
 
 (deftest test-responds-to
-  (let [r     (mr/create)]
+  (let [r     (mr/create :env __env)]
     (mr/on r ($ "key") (fn [_] ))
 
     (is (mr/responds-to? r "key"))
@@ -162,7 +169,7 @@
 (deftest test-error-listener-reactors
   (with-latch 1
     (let [key "events.silly"
-          r   (mr/create)
+          r   (mr/create :env __env)
           e   (atom nil)]
       (mr/on r ($ key) (fn [event]
                          (throw (RuntimeException. "Red Alert!"))))
