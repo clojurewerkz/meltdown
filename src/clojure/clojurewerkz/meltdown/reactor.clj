@@ -64,6 +64,8 @@
   ([^Reactor reactor ^Selector selector ^Consumer consumer]
      (.on reactor selector consumer)))
 
+(def raw register-consumer)
+
 (defn notify
   "Broadcasts a event instantiated from provided payload (data structure)"
   ([^Reactor reactor payload]
