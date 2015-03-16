@@ -29,10 +29,10 @@
 
 
 (deftest basic-stream-filter-test
-  (let [ch (create :env env)
-        even    (filter* even? ch)
-        odd     (filter* odd? ch)
-        res     (atom {})]
+  (let [ch   (create :env env)
+        even (filter* even? ch)
+        odd  (filter* odd? ch)
+        res  (atom {})]
 
     (consume even (fn [v] (swap! res assoc :even v)))
     (consume odd (fn [v] (swap! res assoc :odd v)))
@@ -46,7 +46,7 @@
 
 
 (deftest batch-test
-  (let [ch     (create :env env)
+  (let [ch          (create :env env)
         incrementer (map* inc ch)
         batcher     (batch* 3 incrementer)
         res         (atom nil)]
@@ -102,9 +102,9 @@
 
 
 (deftest basic-identity-test
-  (let [ch (create :env env)
-        stream  (map* identity ch)
-        res (atom nil)]
+  (let [ch     (create :env env)
+        stream (map* identity ch)
+        res    (atom nil)]
 
     (consume stream (fn [v] (reset! res v)))
     (accept ch [1 2 3])
