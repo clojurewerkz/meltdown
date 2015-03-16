@@ -175,3 +175,36 @@
       (Thread/sleep 100)
 
       (is (instance? RuntimeException @e)))))
+
+
+(deftest test-recursive-dispatch
+  (let [amount 100]
+    (with-latch amount
+      (let [dispatcher              (WorkQueueDispatcher. "work queue dispatcher" 16 1024 nil)
+            reactor                 (mr/create :env __env
+                                               :dispatcher dispatcher)
+            intermediate-key        "intermediate"
+            second-intermediate-key "second-intermediate"
+            end-key                 "end"
+            res                     (atom [])]
+        (dotimes [i amount]
+          (mr/on reactor ($ (str intermediate-key i)) #(mr/notify reactor (str second-intermediate-key i) (:data %))))
+
+        (dotimes [i amount]
+          (mr/on reactor ($ (str second-intermediate-key i)) #(mr/notify reactor (str end-key i) (:data %))))
+
+        (dotimes [i amount]
+          (mr/on reactor ($ (str end-key i)) (fn [event]
+                                               (.countDown latch)
+                                               (swap! res conj (:data event)))))
+
+        (dotimes [i amount]
+          (mr/notify reactor (str intermediate-key i) {:payload i}))
+
+        (.await latch 5 TimeUnit/SECONDS)
+
+        (is (= amount (count @res)))
+
+        (is (= (map (fn [i] {:payload i}) (range 0 100))
+               (sort-by :payload @res)))
+        ))))
