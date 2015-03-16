@@ -38,7 +38,8 @@
            [reactor.core.spec Reactors]))
 
 (def dispatcher-types
-  {:event-loop "eventLoop"
+  {:event-loop  "eventLoop"
+   :work-queue  "workQueue"
    :thread-pool "threadPoolExecutor"
    :ring-buffer "ringBuffer"})
 
