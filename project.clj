@@ -4,7 +4,8 @@
   :license {:name "Eclipse Public License"}
   :min-lein-version "2.5.1"
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.projectreactor/reactor-core "1.1.5.RELEASE"]]
+                 [org.projectreactor/reactor-core "1.1.6.BUILD-SNAPSHOT"]]
+
   :profiles {:1.7 {:dependencies [[org.clojure/clojure "1.7.0-alpha5"]]}
              :master {:dependencies [[org.clojure/clojure "1.7.0-master-SNAPSHOT"]]}
              :dev {:resource-paths ["test/resources"]
