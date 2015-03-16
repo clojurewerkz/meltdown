@@ -32,3 +32,5 @@
     (when reply-to
       (.setReplyTo e reply-to))
     e))
+
+(defmacro get-headers [^Event e] `(.getHeaders ~e))
