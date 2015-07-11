@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.projectreactor/reactor-core "1.1.6.BUILD-SNAPSHOT"]]
 
-  :profiles {:1.7 {:dependencies [[org.clojure/clojure "1.7.0-RC2"]]}
+  :profiles {:1.7 {:dependencies [[org.clojure/clojure "1.7.0"]]}
              :master {:dependencies [[org.clojure/clojure "1.7.0-master-SNAPSHOT"]]}
              :dev {:resource-paths ["test/resources"]
                    :dependencies   [[com.lmax/disruptor "3.3.0"]]
