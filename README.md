@@ -752,7 +752,7 @@ with your changes and all tests pass, submit a pull request on GitHub.
 
 ## License
 
-Copyright (C) 2013-2015 Michael S. Klishin, Alex Petrov, and the ClojureWerkz team.
+Copyright (C) 2013-2016 Michael S. Klishin, Alex Petrov, and the ClojureWerkz team.
 
 Double licensed under the [Eclipse Public License](http://www.eclipse.org/legal/epl-v10.html) (the same as Clojure) or
 the [Apache Public License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
